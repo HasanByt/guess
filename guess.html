@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guessing MAIT's</title>
+
+    <!-- Modern Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="app">
+      <header>
+        <div class="brand">
+          <div class="logo">🎯</div>
+          <div>
+            <p class="title">Gaming MAIT's</p>
+            <p class="subtitle">Number Guess Mode</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <a href="index.html" style="text-decoration: none">
+            <button type="button" class="secondary">← Startseite</button>
+          </a>
+
+          <button id="openLeaderboardBtn" type="button" class="secondary">
+            🏆 Highscores
+          </button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <!-- MAIN GAME -->
+        <section class="card">
+          <div class="headline">
+            <h1 id="headline">Let’s go! Welche Zahl ist es?</h1>
+
+            <div class="heat-wrap">
+              <div class="heat-label">
+                <span>🔥 Warm/Kalt</span>
+                <span id="heatText">—</span>
+              </div>
+              <div class="heat-bar">
+                <div class="heat-fill" id="heatFill"></div>
+              </div>
+            </div>
+
+            <div class="meta">
+              <span class="pill" id="bestInfo">
+                <span class="spark"></span> Global: —
+              </span>
+              <span class="pill">
+                <span id="displayTries">Versuche: 0</span>
+              </span>
+            </div>
+          </div>
+
+          <form id="guessForm">
+            <div class="input-wrap">
+              <input
+                id="myNumber"
+                type="number"
+                required
+                min="0"
+                max="100"
+                inputmode="numeric"
+                placeholder="Zahl von 0 bis 100"
+              />
+              <button type="submit">Raten</button>
+            </div>
+
+            <p class="hint">
+              Tipp: Nach dem Spiel kannst du deinen Namen eingeben und deinen
+              Highscore speichern.
+            </p>
+          </form>
+        </section>
+
+        <!-- SIDE -->
+        <aside class="card side">
+          <div>
+            <h3>Spiel-Regeln</h3>
+            <p class="hint">
+              Errate die Zahl zwischen <strong>0</strong> und
+              <strong>100</strong>. Je weniger Versuche, desto besser.
+            </p>
+            <div class="range">
+              <span>Bereich</span>
+              <strong>0 — 100</strong>
+            </div>
+          </div>
+
+          <div>
+            <h3>Pro-Tipp</h3>
+            <p class="hint">
+              Starte in der Mitte (50) und arbeite dich mit grösser/kleiner
+              schrittweise heran.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ===== LEADERBOARD MODAL ===== -->
+    <div class="modal-backdrop" id="leaderboardModal">
+      <div class="modal">
+        <h2>🏆 Top 10</h2>
+        <div class="top3" id="top3"></div>
+        <ol id="leaderboard" start="4"></ol>
+
+        <div class="btnrow">
+          <button id="closeLeaderboardBtn" type="button" class="secondary">
+            Schliessen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SAVE SCORE MODAL ===== -->
+    <div class="modal-backdrop" id="saveScoreModal">
+      <div class="modal">
+        <h2>🎉 Gewonnen!</h2>
+
+        <div class="row">
+          <div id="winText" style="font-weight: 700"></div>
+
+          <label>
+            Dein Name:
+            <input
+              id="winnerName"
+              type="text"
+              placeholder="Name"
+              maxlength="20"
+              autocomplete="nickname"
+            />
+          </label>
+        </div>
+
+        <div class="btnrow">
+          <button id="skipSaveBtn" type="button" class="secondary">
+            Nicht speichern
+          </button>
+          <button id="saveScoreBtn" type="button">
+            Highscore speichern
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+    <script src="guess.js"></script>
+  </body>
+</html>

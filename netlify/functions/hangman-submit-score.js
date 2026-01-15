@@ -7,10 +7,10 @@ export default async (req) => {
       });
     }
 
-    const { name, tries } = await req.json();
+    const { name, wrong } = await req.json();
 
     const cleanName = sanitizeName(name);
-    const cleanTries = Number(tries);
+    const cleanWrong = Number(wrong);
 
     if (!cleanName) {
       return new Response(JSON.stringify({ error: "Ungültiger Name (2-20 Zeichen)." }), {
@@ -19,8 +19,8 @@ export default async (req) => {
       });
     }
 
-    if (!Number.isInteger(cleanTries) || cleanTries < 1 || cleanTries > 999) {
-      return new Response(JSON.stringify({ error: "Ungültige Versuche (1-999)." }), {
+    if (!Number.isInteger(cleanWrong) || cleanWrong < 0 || cleanWrong > 999) {
+      return new Response(JSON.stringify({ error: "Ungültige Fehlerzahl (0-999)." }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
@@ -36,16 +36,12 @@ export default async (req) => {
       });
     }
 
-    const key = "scores"; // <- oder "ngg:scores", aber in beiden Files gleich!
-    const member = `${cleanName}::${cleanTries}`;
+    const key = "hangmanScore";
+    const member = `${cleanName}::${cleanWrong}`;
 
-    // ---- Composite Score ----
-    // Grösserer Score = weiter oben (wir nutzen ZREVRANGE)
-    // (1000 - tries) priorisiert weniger Versuche
-    // timestamp sorgt bei Gleichstand für "neuester gewinnt"
-    const BIG = 10_000_000_000_000; // 1e13 (grösser als Date.now())
+    const BIG = 10_000_000_000_000; // 1e13
     const ts = Date.now();
-    const compositeScore = (1000 - cleanTries) * BIG + ts;
+    const compositeScore = (1000 - cleanWrong) * BIG + ts;
 
     const upstashUrl = `${url}/zadd/${encodeURIComponent(key)}/${compositeScore}/${encodeURIComponent(
       member
@@ -63,14 +59,9 @@ export default async (req) => {
       });
     }
 
-    // Redis: wenn Member schon existiert, wird er NICHT doppelt gespeichert,
-    // sondern sein Score wird aktualisiert.
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-store",
-      },
+      headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
     });
   } catch (e) {
     return new Response(JSON.stringify({ error: "Server error", details: String(e) }), {

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hangman • Guessing MAIT's</title>
+
+    <!-- Modern Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="app">
+      <header>
+        <div class="brand">
+          <div class="logo">🪢</div>
+          <div>
+            <p class="title">Gaming MAIT's</p>
+            <p class="subtitle">Hangman Mode</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <a href="index.html" style="text-decoration: none">
+            <button type="button" class="secondary">← Startseite</button>
+          </a>
+
+          <button id="openLeaderboardBtn" type="button" class="secondary">
+            🏆 Highscores
+          </button>
+
+          <button id="openHelpBtn" type="button" class="secondary">
+            ❔ Regeln
+          </button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <!-- MAIN GAME -->
+        <section class="card">
+          <div class="headline">
+            <h1 id="headline">🪢 Galgenmännchen</h1>
+
+            <div class="meta">
+              <span class="pill">
+                <span class="spark"></span>
+                Fehler: <span id="wrongCount">0</span>/<span id="maxWrong">6</span>
+              </span>
+              <span class="pill">
+                Wortlänge: <span id="wordLen">—</span>
+              </span>
+            </div>
+          </div>
+
+          <div
+            id="wordDisplay"
+            class="card"
+            style="
+              margin-top: 14px;
+              background: var(--card-strong);
+              text-align: center;
+              font-weight: 800;
+              font-size: clamp(22px, 3.2vw, 34px);
+              letter-spacing: 3px;
+              padding: 18px;
+            "
+          >
+            —
+          </div>
+
+          <div style="margin-top: 14px">
+            <div class="input-wrap">
+              <input
+                id="letterInput"
+                type="text"
+                maxlength="1"
+                placeholder="Buchstabe (a-z)"
+                autocomplete="off"
+              />
+              <button id="guessBtn" type="button">Raten</button>
+            </div>
+
+            <p class="hint" style="margin-top: 10px" id="usedLetters">
+              Benutzte Buchstaben: —
+            </p>
+
+            <p class="hint" id="statusText">Status: —</p>
+
+            <div class="btnrow" style="justify-content: flex-start">
+              <button id="newGameBtn" type="button" class="secondary">
+                Neues Wort
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SIDE -->
+        <aside class="card side">
+          <div>
+            <h3>Spiel-Regeln</h3>
+            <p class="hint">
+              Errate das geheime Wort. Du darfst maximal
+              <strong>6</strong> Fehler machen.
+            </p>
+            <div class="range">
+              <span>Max Fehler</span>
+              <strong>6</strong>
+            </div>
+          </div>
+
+          <div>
+            <h3>Pro-Tipp</h3>
+            <p class="hint">
+              Starte mit häufigen Buchstaben:
+              <strong>E, N, I, S, R, T</strong>.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ===== HELP MODAL ===== -->
+    <div class="modal-backdrop" id="helpModal">
+      <div class="modal">
+        <h2>❔ Regeln</h2>
+        <p class="hint">
+          Gib pro Versuch genau einen Buchstaben ein. Richtige Buchstaben werden
+          im Wort aufgedeckt. Falsche Buchstaben erhöhen deinen Fehlerzähler.
+          Bei <strong>6</strong> Fehlern ist das Spiel vorbei.
+        </p>
+
+        <div class="btnrow">
+          <button id="closeHelpBtn" type="button" class="secondary">
+            Schließen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LEADERBOARD MODAL ===== -->
+    <div class="modal-backdrop" id="leaderboardModal">
+      <div class="modal">
+        <h2>🏆 Top 10 (Hangman)</h2>
+        <div class="top3" id="top3"></div>
+        <ol id="leaderboard" start="4"></ol>
+
+        <div class="btnrow">
+          <button id="closeLeaderboardBtn" type="button" class="secondary">
+            Schließen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SAVE SCORE MODAL ===== -->
+    <div class="modal-backdrop" id="saveScoreModal">
+      <div class="modal">
+        <h2>🎉 Gewonnen!</h2>
+
+        <div class="row">
+          <div id="winText" style="font-weight: 700"></div>
+
+          <label>
+            Dein Name:
+            <input
+              id="winnerName"
+              type="text"
+              placeholder="Name"
+              maxlength="20"
+              autocomplete="nickname"
+            />
+          </label>
+        </div>
+
+        <div class="btnrow">
+          <button id="skipSaveBtn" type="button" class="secondary">
+            Nicht speichern
+          </button>
+          <button id="saveScoreBtn" type="button">
+            Highscore speichern
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+    <script src="hangman.js"></script>
+  </body>
+</html>

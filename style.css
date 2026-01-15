@@ -1,0 +1,463 @@
+/* =========================
+         THEME
+      ========================== */
+:root {
+  --bg0: #070a12;
+  --bg1: #0b1220;
+  --card: rgba(255, 255, 255, 0.08);
+  --card-strong: rgba(255, 255, 255, 0.12);
+  --border: rgba(255, 255, 255, 0.14);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.7);
+
+  --accent: #7c5cff;
+  --accent2: #2ee9a6;
+  --danger: #ff4d6d;
+
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  --radius: 18px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg0: #f6f7fb;
+    --bg1: #eef1ff;
+    --card: rgba(255, 255, 255, 0.75);
+    --card-strong: rgba(255, 255, 255, 0.9);
+    --border: rgba(17, 24, 39, 0.1);
+    --text: rgba(17, 24, 39, 0.92);
+    --muted: rgba(17, 24, 39, 0.65);
+    --shadow: 0 18px 50px rgba(17, 24, 39, 0.12);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, system-ui, sans-serif;
+  color: var(--text);
+  background: radial-gradient(
+      1200px 700px at 20% 10%,
+      rgba(124, 92, 255, 0.35),
+      transparent 55%
+    ),
+    radial-gradient(
+      1200px 700px at 90% 20%,
+      rgba(46, 233, 166, 0.22),
+      transparent 60%
+    ),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.app {
+  width: min(980px, 100%);
+  display: grid;
+  gap: 18px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+}
+
+.title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.card {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  padding: 18px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 18px;
+}
+
+@media (max-width: 860px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== HEADLINE ===== */
+.headline {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+#headline {
+  margin: 0;
+  font-size: clamp(22px, 3.2vw, 34px);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pill {
+  border: 1px solid var(--border);
+  background: var(--card-strong);
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.spark {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent2);
+  display: inline-block;
+  margin-right: 6px;
+}
+
+/* ===== FORM ===== */
+form {
+  display: grid;
+  gap: 10px;
+}
+
+.input-wrap {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+@media (max-width: 520px) {
+  .input-wrap {
+    grid-template-columns: 1fr;
+  }
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.15);
+  color: var(--text);
+  font-size: 15px;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(124, 92, 255, 0.18);
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 700;
+  font-size: 14px;
+  color: white;
+  background: linear-gradient(135deg, var(--accent), #a08bff);
+}
+
+button.secondary {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+/* ===== WARM/KALT ===== */
+.heat-wrap {
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  background: var(--card-strong);
+  border-radius: 16px;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.heat-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.heat-bar {
+  height: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+}
+
+.heat-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #2ee9a6, #7c5cff, #ff4d6d);
+  transition: width 0.25s ease;
+}
+
+/* ===== SIDE ===== */
+.side {
+  display: grid;
+  gap: 12px;
+}
+
+.hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.range {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--card-strong);
+  font-size: 13px;
+}
+
+/* ===== TOP 3 ===== */
+.top3 {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+@media (min-width: 520px) {
+  .top3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.podium {
+  border: 1px solid var(--border);
+  background: var(--card-strong);
+  border-radius: 16px;
+  padding: 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.highlight {
+  border-color: rgba(46, 233, 166, 0.7);
+  box-shadow: 0 0 0 4px rgba(46, 233, 166, 0.14);
+}
+
+ol {
+  padding-left: 20px;
+}
+
+li {
+  padding: 8px 10px;
+  margin: 8px 0;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ===== MODALS (FIXED) ===== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.62);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 999;
+}
+
+.modal-backdrop.show {
+  display: flex;
+}
+
+.modal {
+  width: min(520px, 100%);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px;
+  max-height: 80vh;
+  overflow: auto;
+  background: var(--card);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+}
+
+.modal h2,
+.modal label,
+.modal div {
+  color: var(--text);
+}
+
+.modal input {
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--text);
+}
+
+@media (prefers-color-scheme: light) {
+  .modal {
+    background: rgba(255, 255, 255, 0.95);
+    color: rgba(17, 24, 39, 0.92);
+  }
+
+  .modal h2,
+  .modal label,
+  .modal div {
+    color: rgba(17, 24, 39, 0.92);
+  }
+
+  .modal input {
+    background: rgba(255, 255, 255, 0.9);
+    color: rgba(17, 24, 39, 0.92);
+  }
+}
+
+.row {
+  display: grid;
+  gap: 10px;
+}
+
+.btnrow {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+/* ===== Warm/Kalt Animationen ===== */
+.heat-fill.bump {
+  animation: heatBump 180ms ease-out;
+}
+
+.heat-wrap.pulse .heat-fill {
+  animation: heatPulse 700ms ease-in-out infinite;
+}
+
+@keyframes heatBump {
+  0% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.35);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes heatPulse {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.25);
+  }
+}
+
+/* optional: smoother transform */
+.heat-fill {
+  transform-origin: center;
+}
+
+/* =========================
+   Startseite – Symmetrisches Grid
+========================= */
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 860px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   Mobile Fix: Hangman responsive
+========================= */
+
+/* Header Buttons dürfen umbrechen (wichtig für Hangman mit 3 Buttons) */
+.header-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Verhindert horizontales Scrollen durch lange Inhalte */
+body {
+  overflow-x: hidden;
+}
+
+/* Hangman: Wortanzeige darf das Layout nicht sprengen */
+#wordDisplay {
+  max-width: 100%;
+  overflow-x: auto;          /* wenn zu lang: scroll statt kaputt */
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Auf sehr kleinen Screens: weniger Letter-Spacing & kleinere Schrift */
+@media (max-width: 520px) {
+  #wordDisplay {
+    letter-spacing: 3px !important;
+    font-size: 22px !important;
+  }
+}
+
