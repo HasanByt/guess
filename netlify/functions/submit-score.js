@@ -36,15 +36,18 @@ export default async (req) => {
       });
     }
 
-    const key = "ngg:scores";
-
-    // ✅ Member ist jetzt stabil: "Hasan::4"
-    // Dadurch kann Redis Duplikate verhindern.
+    const key = "scores"; // <- oder "ngg:scores", aber in beiden Files gleich!
     const member = `${cleanName}::${cleanTries}`;
 
-    // ✅ NX: nur hinzufügen wenn member noch nicht existiert
-    // ZADD key NX score member
-    const upstashUrl = `${url}/zadd/${encodeURIComponent(key)}/NX/${cleanTries}/${encodeURIComponent(
+    // ---- Composite Score ----
+    // Größerer Score = weiter oben (wir nutzen ZREVRANGE)
+    // (1000 - tries) priorisiert weniger Versuche
+    // timestamp sorgt bei Gleichstand für "neuester gewinnt"
+    const BIG = 10_000_000_000_000; // 1e13 (größer als Date.now())
+    const ts = Date.now();
+    const compositeScore = (1000 - cleanTries) * BIG + ts;
+
+    const upstashUrl = `${url}/zadd/${encodeURIComponent(key)}/${compositeScore}/${encodeURIComponent(
       member
     )}`;
 
@@ -60,11 +63,9 @@ export default async (req) => {
       });
     }
 
-    const data = await r.json();
-    // Upstash gibt typischerweise result: 1 (added) oder 0 (not added)
-    const added = Number(data?.result) === 1;
-
-    return new Response(JSON.stringify({ ok: true, added }), {
+    // Redis: wenn Member schon existiert, wird er NICHT doppelt gespeichert,
+    // sondern sein Score wird aktualisiert.
+    return new Response(JSON.stringify({ ok: true }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

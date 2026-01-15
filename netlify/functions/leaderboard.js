@@ -17,9 +17,10 @@ export default async (req) => {
       });
     }
 
-    const key = "scores";
+    const key = "scores"; // <- muss exakt gleich sein wie in submit-score.js
 
-    const r = await fetch(`${url}/zrange/${encodeURIComponent(key)}/0/9/WITHSCORES`, {
+    // ✅ Neu: ZREVRANGE (best score zuerst)
+    const r = await fetch(`${url}/zrevrange/${encodeURIComponent(key)}/0/9/WITHSCORES`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -37,12 +38,11 @@ export default async (req) => {
     const rows = [];
     for (let i = 0; i < arr.length; i += 2) {
       const member = String(arr[i] ?? "");
-      const tries = Number(arr[i + 1]);
+      // member: "Hasan::4"
+      const [name, triesStr] = member.split("::");
+      const tries = Number(triesStr);
 
-      // member = "Hasan::4"
-      const name = member.split("::")[0] || "?";
-
-      rows.push({ name, tries });
+      rows.push({ name: name || "?", tries });
     }
 
     return new Response(JSON.stringify(rows), {
