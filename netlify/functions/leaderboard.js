@@ -17,7 +17,7 @@ export default async (req) => {
       });
     }
 
-    const key = "ngg:scores";
+    const key = "scores";
 
     const r = await fetch(`${url}/zrange/${encodeURIComponent(key)}/0/9/WITHSCORES`, {
       headers: { Authorization: `Bearer ${token}` },
