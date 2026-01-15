@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snake • Guessing MAIT's</title>
+
+    <!-- Modern Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="app">
+      <header>
+        <div class="brand">
+          <div class="logo">🐍</div>
+          <div>
+            <p class="title">Gaming MAIT's</p>
+            <p class="subtitle">Snake Mode</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <a href="index.html" style="text-decoration: none">
+            <button type="button" class="secondary">← Startseite</button>
+          </a>
+
+          <button id="openLeaderboardBtn" type="button" class="secondary">
+            🏆 Highscores
+          </button>
+
+          <button id="openHelpBtn" type="button" class="secondary">
+            ❔ Regeln
+          </button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <!-- MAIN GAME -->
+        <section class="card">
+          <div class="headline">
+            <h1 id="headline">🐍 Snake</h1>
+
+            <div class="meta">
+              <span class="pill" id="bestInfo">
+                <span class="spark"></span> Global: —
+              </span>
+              <span class="pill">
+                Score: <span id="scoreText">0</span>
+              </span>
+              <span class="pill">
+                Speed: <span id="speedText">1.0x</span>
+              </span>
+            </div>
+          </div>
+
+          <div
+            class="card"
+            style="
+              background: var(--card-strong);
+              padding: 12px;
+              border-radius: 16px;
+            "
+          >
+            <canvas
+              id="gameCanvas"
+              width="520"
+              height="520"
+              style="
+                width: 100%;
+                height: auto;
+                display: block;
+                border-radius: 14px;
+                border: 1px solid var(--border);
+                background: rgba(0, 0, 0, 0.18);
+              "
+            ></canvas>
+          </div>
+
+          <p class="hint" style="margin-top: 10px">
+            Steuerung: Pfeiltasten ⬅️⬆️⬇️➡️ (oder Buttons rechts auf Mobile).
+          </p>
+
+          <div class="btnrow" style="justify-content: flex-start">
+            <button id="startBtn" type="button">Start</button>
+            <button id="pauseBtn" type="button" class="secondary">Pause</button>
+            <button id="restartBtn" type="button" class="secondary">
+              Neustart
+            </button>
+          </div>
+        </section>
+
+        <!-- SIDE -->
+        <aside class="card side">
+          <div>
+            <h3>Spiel-Regeln</h3>
+            <p class="hint">
+              Friss die Äpfel 🍎, werde länger und crashe nicht in die Wand oder
+              dich selbst.
+            </p>
+            <div class="range">
+              <span>Punkte pro Apfel</span>
+              <strong>+10</strong>
+            </div>
+          </div>
+
+          <div>
+            <h3>Mobile Steuerung</h3>
+            <p class="hint">Tippe die Buttons, um die Richtung zu ändern.</p>
+
+            <div class="btnrow" style="justify-content: center">
+              <button id="btnUp" type="button" class="secondary">⬆️</button>
+            </div>
+            <div class="btnrow" style="justify-content: center">
+              <button id="btnLeft" type="button" class="secondary">⬅️</button>
+              <button id="btnDown" type="button" class="secondary">⬇️</button>
+              <button id="btnRight" type="button" class="secondary">➡️</button>
+            </div>
+          </div>
+
+          <div>
+            <h3>Pro-Tipp</h3>
+            <p class="hint">
+              Bleib am Rand, bau dir Platz und mach keine hektischen Wendungen.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ===== HELP MODAL ===== -->
+    <div class="modal-backdrop" id="helpModal">
+      <div class="modal">
+        <h2>❔ Regeln</h2>
+        <p class="hint">
+          Du steuerst die Schlange mit den Pfeiltasten (oder Buttons). Sammle
+          Äpfel 🍎, um Punkte zu bekommen. Das Spiel endet, wenn du in die Wand
+          oder in dich selbst fährst. Je höher dein Score, desto besser.
+        </p>
+
+        <div class="btnrow">
+          <button id="closeHelpBtn" type="button" class="secondary">
+            Schliessen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LEADERBOARD MODAL ===== -->
+    <div class="modal-backdrop" id="leaderboardModal">
+      <div class="modal">
+        <h2>🏆 Top 10 (Snake)</h2>
+        <div class="top3" id="top3"></div>
+        <ol id="leaderboard" start="4"></ol>
+
+        <div class="btnrow">
+          <button id="closeLeaderboardBtn" type="button" class="secondary">
+            Schliessen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SAVE SCORE MODAL ===== -->
+    <div class="modal-backdrop" id="saveScoreModal">
+      <div class="modal">
+        <h2>💀 Game Over!</h2>
+
+        <div class="row">
+          <div id="winText" style="font-weight: 700"></div>
+
+          <label>
+            Dein Name:
+            <input
+              id="winnerName"
+              type="text"
+              placeholder="Name"
+              maxlength="20"
+              autocomplete="nickname"
+            />
+          </label>
+        </div>
+
+        <div class="btnrow">
+          <button id="skipSaveBtn" type="button" class="secondary">
+            Nicht speichern
+          </button>
+          <button id="saveScoreBtn" type="button">Highscore speichern</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+    <script src="snake.js"></script>
+  </body>
+</html>

@@ -1,104 +1,110 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Guessing MAIT's</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guessing MAIT's</title>
 
-  <body>
-    <div class="app">
-      <!-- HEADER -->
-      <header>
-        <div class="brand">
-          <div class="logo">🎮</div>
-          <div>
-            <p class="title">Gaming MAIT's</p>
-            <p class="subtitle">Mini Games</p>
-          </div>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="app">
+    <!-- HEADER -->
+    <header>
+      <div class="brand">
+        <div class="logo">🎮</div>
+        <div>
+          <p class="title">Gaming MAIT's</p>
+          <p class="subtitle">Mini Games</p>
         </div>
-      </header>
+      </div>
+    </header>
 
-      <!-- HERO -->
-      <section class="card" style="text-align: center">
-        <div class="headline">
-          <h1 style="font-size: clamp(28px, 4vw, 44px)">🚀</h1>
-          <h1 style="font-size: clamp(28px, 4vw, 44px)">Ready to play?</h1>
-          <p class="hint" style="max-width: 520px; margin: 0 auto">
-            Fordere dein Gehirn heraus, knacke Highscores und beweise, dass du
-            der wahre <strong>MAIT-Champion</strong> bist.
-          </p>
-        </div>
-      </section>
-
-      <!-- GAME CARDS -->
-      <section class="home-grid">
-        <!-- GUESS GAME -->
-        <div class="card game-card">
-          <div class="card-content">
-            <div class="headline">
-              <h2>🎯 Nummer erraten</h2>
-              <p class="hint">
-                Errate die geheime Zahl zwischen 0 und 100. Weniger Versuche =
-                höherer Rang.
-              </p>
-            </div>
-
-            <ul class="hint">
-              <li>🔥 Warm/Kalt-Anzeige</li>
-              <li>🏆 Globales Leaderboard</li>
-              <li>⚡ Schnelles Gameplay</li>
-            </ul>
-          </div>
-
-          <div class="btnrow">
-            <a href="guess.html" style="text-decoration: none">
-              <button>Jetzt spielen →</button>
-            </a>
-          </div>
-        </div>
-
-        <!-- HANGMAN -->
-        <div class="card game-card">
-          <div class="card-content">
-            <div class="headline">
-              <h2>🪢 Galgenmännchen</h2>
-              <p class="hint">
-                Errate das Wort, bevor das Männchen hängt. Jeder Fehler zählt.
-              </p>
-            </div>
-
-            <ul class="hint">
-              <li>🧠 Wort-Logik</li>
-              <li>❌ Max. 6 Fehler</li>
-              <li>🏆 Eigenes Leaderboard</li>
-            </ul>
-          </div>
-
-          <div class="btnrow">
-            <a href="hangman.html" style="text-decoration: none">
-              <button>Jetzt spielen →</button>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <!-- OPTIONAL: kleiner Hint unten -->
-      <section class="card" style="text-align: center">
-        <p class="hint">
-          💡 Tipp: Spiele beide Games – nur wahre Legenden stehen überall auf
-          Platz 1.
+    <!-- HERO -->
+    <section class="card" style="text-align: center">
+      <div class="headline">
+        <h1 style="font-size: clamp(28px, 4vw, 44px)">🚀</h1>
+        <h1 style="font-size: clamp(28px, 4vw, 44px)">Ready to play?</h1>
+        <p class="hint" style="max-width: 520px; margin: 0 auto">
+          Fordere dein Gehirn heraus, knacke Highscores und beweise, dass du
+          der wahre <strong>MAIT-Champion</strong> bist.
         </p>
-      </section>
-    </div>
-  </body>
+      </div>
+    </section>
+
+    <!-- GAME CARDS -->
+    <section class="home-grid">
+      <!-- GUESS GAME -->
+      <div class="card game-card">
+        <div class="card-content">
+          <div class="headline">
+            <h2>🎯 Nummer erraten</h2>
+            <p class="hint">
+              Errate die geheime Zahl zwischen 0 und 100. Weniger Versuche =
+              höherer Rang.
+            </p>
+          </div>
+        </div>
+
+        <div class="btnrow">
+          <a href="guess.html" style="text-decoration: none">
+            <button>Jetzt spielen →</button>
+          </a>
+        </div>
+      </div>
+
+      <!-- HANGMAN -->
+      <div class="card game-card">
+        <div class="card-content">
+          <div class="headline">
+            <h2>🪢 Galgenmännchen</h2>
+            <p class="hint">
+              Errate das Wort, bevor das Männchen hängt. Jeder Fehler zählt.
+            </p>
+          </div>
+        </div>
+
+        <div class="btnrow">
+          <a href="hangman.html" style="text-decoration: none">
+            <button>Jetzt spielen →</button>
+          </a>
+        </div>
+      </div>
+
+      <!-- SNAKE -->
+      <div class="card game-card">
+        <div class="card-content">
+          <div class="headline">
+            <h2>🐍 Snake</h2>
+            <p class="hint">
+              Errate das Wort, bevor das Männchen hängt. Jeder Fehler zählt.
+            </p>
+          </div>
+        </div>
+
+        <div class="btnrow">
+          <a href="snake.html" style="text-decoration: none">
+            <button>Jetzt spielen →</button>
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- OPTIONAL: kleiner Hint unten -->
+    <section class="card" style="text-align: center">
+      <p class="hint">
+        💡 Tipp: Spiele beide Games – nur wahre Legenden stehen überall auf
+        Platz 1.
+      </p>
+    </section>
+  </div>
+</body>
+
 </html>
