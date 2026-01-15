@@ -1,43 +1,61 @@
-export default async () => {
+export default async (req) => {
   try {
+    if (req.method !== "GET") {
+      return new Response(JSON.stringify({ error: "Method not allowed" }), {
+        status: 405,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const url = process.env.UPSTASH_REDIS_REST_URL;
     const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-    const key = "scores";
+    if (!url || !token) {
+      return new Response(JSON.stringify({ error: "Missing Upstash env vars" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
-    // ZRANGE scores 0 9 WITHSCORES
-    const res = await fetch(`${url}/zrange/${key}/0/9/WITHSCORES`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const key = "ngg:scores";
+
+    const r = await fetch(`${url}/zrange/${encodeURIComponent(key)}/0/9/WITHSCORES`, {
+      headers: { Authorization: `Bearer ${token}` },
     });
 
-    if (!res.ok) {
-      const txt = await res.text();
-      return new Response(
-        JSON.stringify({ error: "Upstash error", details: txt }),
-        { status: 500 }
-      );
+    if (!r.ok) {
+      const t = await r.text();
+      return new Response(JSON.stringify({ error: "Upstash error", details: t }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
-    const data = await res.json();
+    const data = await r.json();
+    const arr = data?.result || [];
 
-    const result = [];
-    for (let i = 0; i < data.result.length; i += 2) {
-      const rawName = data.result[i];
-      const tries = Number(data.result[i + 1]);
+    const rows = [];
+    for (let i = 0; i < arr.length; i += 2) {
+      const member = String(arr[i] ?? "");
+      const tries = Number(arr[i + 1]);
 
-      // name::timestamp -> name
-      const name = rawName.split("::")[0];
+      // member = "Hasan::4"
+      const name = member.split("::")[0] || "?";
 
-      result.push({ name, tries });
+      rows.push({ name, tries });
     }
 
-    return new Response(JSON.stringify(result), { status: 200 });
-  } catch (err) {
-    return new Response(
-      JSON.stringify({ error: "Server error", details: String(err) }),
-      { status: 500 }
-    );
+    return new Response(JSON.stringify(rows), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store",
+      },
+    });
+  } catch (e) {
+    return new Response(JSON.stringify({ error: "Server error", details: String(e) }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 };
