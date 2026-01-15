@@ -1,6 +1,7 @@
 // ===============================
 // Snake Game + Highscore (Netlify/Upstash)
 // Design & UX wie guess.js / hangman.js
+// + Mobile Swipe Controls (Variante 2)
 // ===============================
 
 const API_GET = "/.netlify/functions/snake-get-scores";
@@ -72,29 +73,31 @@ let gameOver = false;
 let lastTick = 0;
 let tickMs = 140; // base speed
 
+// RAF state (wichtig: nur 1 Loop!)
+let rafId = null;
+
 // ===== Init =====
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
 loadLeaderboard();
 resetGame();
-renderFrame();
+
+// starte eine einzige Render-Schleife
+rafId = requestAnimationFrame(loop);
 
 // ===============================
 // Canvas sizing (responsive)
 // ===============================
 function resizeCanvas() {
-  // Canvas bleibt quadratisch in der Card
   const max = 520;
   const w = Math.min(max, canvas.parentElement.clientWidth);
   canvas.width = Math.floor(w);
   canvas.height = Math.floor(w);
 
-  // cell size so that GRID fits perfectly
   cell = Math.floor(canvas.width / GRID);
   const boardSize = cell * GRID;
 
-  // center board if canvas a bit larger
   offsetX = Math.floor((canvas.width - boardSize) / 2);
   offsetY = Math.floor((canvas.height - boardSize) / 2);
 }
@@ -140,8 +143,6 @@ function togglePause() {
 }
 
 function updateSpeed() {
-  // schneller je höher der Score
-  // minimal 70ms
   const level = Math.floor(score / 50); // alle 50 Punkte schneller
   tickMs = Math.max(70, 140 - level * 10);
 
@@ -211,7 +212,7 @@ function endGame() {
   headline.textContent = "💀 Game Over!";
   if (typeof JSConfetti !== "undefined") {
     if (!jsConfetti) jsConfetti = new JSConfetti();
-    if (score >= 30) jsConfetti.addConfetti(); // nur wenn bisschen was erreicht
+    if (score >= 30) jsConfetti.addConfetti();
   }
 
   openSaveModal();
@@ -244,10 +245,12 @@ function renderFrame() {
   for (let i = snake.length - 1; i >= 0; i--) {
     const s = snake[i];
     const isHead = i === 0;
-    drawCell(s.x, s.y, isHead ? "rgba(46,233,166,0.95)" : "rgba(124,92,255,0.9)");
+    drawCell(
+      s.x,
+      s.y,
+      isHead ? "rgba(46,233,166,0.95)" : "rgba(124,92,255,0.9)"
+    );
   }
-
-  requestAnimationFrame(loop);
 }
 
 function loop(now) {
@@ -257,7 +260,9 @@ function loop(now) {
       tick();
     }
   }
+
   renderFrame();
+  rafId = requestAnimationFrame(loop);
 }
 
 // ===============================
@@ -383,13 +388,16 @@ function sanitizeName(name) {
   if (typeof name !== "string") return null;
   const clean = name.trim();
   if (clean.length < 2 || clean.length > 20) return null;
-  if (!/^[a-zA-Z0-9 äöüÄÖÜss._-]+$/.test(clean)) return null;
+  // FIX: ß war bei dir kaputt -> richtig:
+  if (!/^[a-zA-Z0-9 äöüÄÖÜß._-]+$/.test(clean)) return null;
   return clean;
 }
 
 // ===============================
 // Events
 // ===============================
+
+// Keyboard
 window.addEventListener("keydown", (e) => {
   const k = e.key;
   if (k === "ArrowUp") setDirection(0, -1);
@@ -398,10 +406,11 @@ window.addEventListener("keydown", (e) => {
   else if (k === "ArrowRight") setDirection(1, 0);
 });
 
-btnUp.addEventListener("click", () => setDirection(0, -1));
-btnDown.addEventListener("click", () => setDirection(0, 1));
-btnLeft.addEventListener("click", () => setDirection(-1, 0));
-btnRight.addEventListener("click", () => setDirection(1, 0));
+// Mobile Buttons (schneller als click)
+btnUp?.addEventListener("pointerdown", () => setDirection(0, -1));
+btnDown?.addEventListener("pointerdown", () => setDirection(0, 1));
+btnLeft?.addEventListener("pointerdown", () => setDirection(-1, 0));
+btnRight?.addEventListener("pointerdown", () => setDirection(1, 0));
 
 startBtn.addEventListener("click", startGame);
 pauseBtn.addEventListener("click", togglePause);
@@ -449,3 +458,59 @@ saveScoreBtn.addEventListener("click", async () => {
     await loadLeaderboard();
   }
 });
+
+// ===============================
+// 📱 Mobile Swipe Controls (nur während Spiel)
+// ✅ Swipe funktioniert nur wenn: running=true, paused=false, gameOver=false
+// ===============================
+let touchStartX = 0;
+let touchStartY = 0;
+
+canvas.addEventListener(
+  "touchstart",
+  (e) => {
+    if (!running || paused || gameOver) return;
+
+    const t = e.touches[0];
+    touchStartX = t.clientX;
+    touchStartY = t.clientY;
+  },
+  { passive: true }
+);
+
+canvas.addEventListener(
+  "touchmove",
+  (e) => {
+    if (!running || paused || gameOver) return;
+    e.preventDefault(); // verhindert Scrollen beim Swipen
+  },
+  { passive: false }
+);
+
+canvas.addEventListener(
+  "touchend",
+  (e) => {
+    if (!running || paused || gameOver) return;
+
+    const t = e.changedTouches[0];
+    const dxSwipe = t.clientX - touchStartX;
+    const dySwipe = t.clientY - touchStartY;
+
+    const absX = Math.abs(dxSwipe);
+    const absY = Math.abs(dySwipe);
+
+    // minimale Swipe-Distanz
+    if (Math.max(absX, absY) < 20) return;
+
+    if (absX > absY) {
+      // horizontal
+      if (dxSwipe > 0) setDirection(1, 0);  // →
+      else setDirection(-1, 0);             // ←
+    } else {
+      // vertikal
+      if (dySwipe > 0) setDirection(0, 1);  // ↓
+      else setDirection(0, -1);             // ↑
+    }
+  },
+  { passive: true }
+);
