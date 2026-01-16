@@ -1,14 +1,88 @@
 // ===============================
-// Startseite: Top 3 Highscores laden + Medaillen
+// Startseite: Top 3 Highscores pro Game
 // ===============================
 
-// WICHTIG: Passe diese 3 GET-Endpoints an deine echten Functions an,
-// falls deine Dateinamen anders heissen.
-const API_GUESS_GET = "/.netlify/functions/get-scores";
-const API_HANGMAN_GET = "/.netlify/functions/hangman-get-scores";
-const API_SNAKE_GET = "/.netlify/functions/snake-get-scores";
+document.addEventListener("DOMContentLoaded", () => {
+  loadAllHomeScores();
+});
 
-const MEDALS = ["🥇", "🥈", "🥉"];
+async function loadAllHomeScores() {
+  await Promise.allSettled([
+    loadTop3({
+      url: "/.netlify/functions/leaderboard",
+      elId: "homeGuessTop3",
+      type: "guess",
+    }),
+    loadTop3({
+      url: "/.netlify/functions/hangman-get-scores",
+      elId: "homeHangmanTop3",
+      type: "hangman",
+    }),
+    loadTop3({
+      url: "/.netlify/functions/snake-get-scores",
+      elId: "homeSnakeTop3",
+      type: "snake",
+    }),
+  ]);
+}
+
+async function loadTop3({ url, elId, type }) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+
+  el.innerHTML = "<li>Lade…</li>";
+
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const rows = await res.json();
+    if (!Array.isArray(rows)) throw new Error("Response is not an array");
+
+    renderTop3(el, rows, type);
+  } catch (err) {
+    console.error(`[HOME] ${type} failed`, url, err);
+    el.innerHTML = "<li>Fehler beim Laden</li>";
+  }
+}
+
+function renderTop3(el, rows, type) {
+  const top = (rows || []).slice(0, 3);
+
+  if (!top.length) {
+    el.innerHTML = "<li>Noch keine Scores</li>";
+    return;
+  }
+
+  const medals = ["🥇", "🥈", "🥉"];
+
+  el.innerHTML = top
+    .map((r, i) => {
+      const name = (r?.name || "—").toString();
+
+      let value = "—";
+      if (type === "guess") {
+        // guess: meistens tries (oder score fallback)
+        const tries = Number.isFinite(Number(r?.tries))
+          ? Number(r.tries)
+          : Number.isFinite(Number(r?.score))
+          ? Number(r.score)
+          : null;
+        value = tries === null ? "—" : `${tries} Versuche`;
+      } else if (type === "hangman") {
+        // hangman: entweder score (Wörter) oder wrong (Fehler)
+        if (Number.isFinite(Number(r?.score))) value = `${Number(r.score)} Wörter`;
+        else if (Number.isFinite(Number(r?.wrong))) value = `${Number(r.wrong)} Fehler`;
+      } else if (type === "snake") {
+        // snake: score
+        const score = Number.isFinite(Number(r?.score)) ? Number(r.score) : null;
+        value = score === null ? "—" : `${score} Punkte`;
+      }
+
+      return `<li>${medals[i]} ${escapeHtml(name)} — ${escapeHtml(value)}</li>`;
+    })
+    .join("");
+}
 
 function escapeHtml(str) {
   return String(str)
@@ -18,69 +92,3 @@ function escapeHtml(str) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
-
-function renderTop3(listEl, rows, valueKey, suffix) {
-  listEl.innerHTML = "";
-
-  const safe = Array.isArray(rows) ? rows : [];
-
-  if (safe.length === 0) {
-    listEl.innerHTML = "<li>—</li>";
-    return;
-  }
-
-  safe.slice(0, 3).forEach((r, i) => {
-    const name = escapeHtml(r?.name ?? "—");
-    const val = Number(r?.[valueKey]);
-    const valueText = Number.isFinite(val) ? `${val} ${suffix}` : "";
-
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <span class="medal">${MEDALS[i]}</span>
-      <span class="player">${name}</span>
-      <span class="value">${valueText}</span>
-    `;
-    listEl.appendChild(li);
-  });
-}
-
-async function loadOne(url) {
-  const r = await fetch(url, { cache: "no-store" });
-  if (!r.ok) throw new Error(`Fetch failed: ${url}`);
-  return r.json();
-}
-
-async function loadHomeHighscores() {
-  const guessEl = document.getElementById("homeGuessTop3");
-  const hangmanEl = document.getElementById("homeHangmanTop3");
-  const snakeEl = document.getElementById("homeSnakeTop3");
-
-  if (!guessEl || !hangmanEl || !snakeEl) return;
-
-  try {
-    const [guessRows, hangmanRows, snakeRows] = await Promise.all([
-      loadOne(API_GUESS_GET),
-      loadOne(API_HANGMAN_GET),
-      loadOne(API_SNAKE_GET),
-    ]);
-
-    // Guess: tries
-    renderTop3(guessEl, guessRows, "tries", "Vers.");
-
-    // Hangman: wenn du aktuell score=Wörter nutzt:
-    // -> valueKey = "score"
-    // Falls du noch wrong nutzt, dann: valueKey="wrong" und suffix="Fehler"
-    renderTop3(hangmanEl, hangmanRows, "score", "Wörter");
-
-    // Snake: score
-    renderTop3(snakeEl, snakeRows, "score", "Pkt.");
-  } catch (e) {
-    // Fallback bei Fehlern
-    guessEl.innerHTML = "<li>Fehler beim Laden</li>";
-    hangmanEl.innerHTML = "<li>Fehler beim Laden</li>";
-    snakeEl.innerHTML = "<li>Fehler beim Laden</li>";
-    console.warn(e);
-  }
-}
-
-document.addEventListener("DOMContentLoaded", loadHomeHighscores);
