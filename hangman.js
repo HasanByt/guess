@@ -1,7 +1,8 @@
 // ===============================
-// Hangman Game
-// Online Leaderboard (Netlify)
-// Gleiche UX & Sprache wie guess.js
+// Hangman Game (Endless Run)
+// Score = geschaffte Wörter
+// Spiel endet erst bei 6 Fehlern gesamt
+// Online Leaderboard (Netlify) – UX wie guess.js
 // ===============================
 
 // API (Netlify Functions)
@@ -13,6 +14,7 @@ let jsConfetti = null;
 
 // Wörter
 const WORDS = [
+  // Alltag
   "haus",
   "schule",
   "musik",
@@ -28,11 +30,62 @@ const WORDS = [
   "reisen",
   "sport",
   "wissen",
+  "leben",
+  "mensch",
+  "stadt",
+  "land",
+  "zeit",
+
+  // Freizeit & Lifestyle
+  "kino",
+  "buch",
+  "lesen",
+  "malen",
+  "tanzen",
+  "kochen",
+  "essen",
+  "trinken",
+  "spazieren",
+  "wandern",
+  "spielen",
+  "lachen",
+  "denken",
+
+  // Technik & Digital
+  "computer",
+  "handy",
+  "software",
+  "hardware",
+  "browser",
+  "daten",
+  "server",
+  "cloud",
+  "passwort",
+  "programm",
+
+  // Gefühle & Eigenschaften
+  "freude",
+  "angst",
+  "hoffnung",
+  "mut",
+  "ruhe",
+  "stress",
+  "kreativ",
+  "neugierig",
+  "geduldig",
+  "ehrlich",
+
+  // Abstrakt & spannend
   "geheimnis",
   "abenteuer",
   "freiheit",
   "zukunft",
-  "kreativ",
+  "entscheidung",
+  "erfahrung",
+  "entwicklung",
+  "verantwortung",
+  "moeglichkeit",
+  "herausforderung",
 ];
 
 const MAX_WRONG = 6;
@@ -51,6 +104,10 @@ const statusTextEl = document.getElementById("statusText");
 const wrongCountEl = document.getElementById("wrongCount");
 const maxWrongEl = document.getElementById("maxWrong");
 const wordLenEl = document.getElementById("wordLen");
+
+// Optional (wenn du es in der HTML ergänzt):
+// <span id="scoreWords">0</span>
+const scoreWordsEl = document.getElementById("scoreWords");
 
 // Help modal
 const openHelpBtn = document.getElementById("openHelpBtn");
@@ -77,18 +134,48 @@ if (maxWrongEl) maxWrongEl.textContent = String(MAX_WRONG);
 const STORAGE_WINNER = "hangman_winnerName";
 winnerNameInput.value = localStorage.getItem(STORAGE_WINNER) || "";
 
-// ===== Game State =====
+// ===== Run State =====
 let secret = "";
 let guessed = new Set();
-let wrong = 0;
-let done = false;
-let winHandled = false;
+
+// global über die ganze Runde
+let wrongTotal = 0;
+
+// Score: geschaffte Wörter
+let scoreWords = 0;
+
+// Status
+let done = false; // true nur bei GameOver
+let wordLocked = false; // kurzer Lock beim Wort-Übergang
 
 // ===============================
 // Game Logic
 // ===============================
 function pickWord() {
   return WORDS[Math.floor(Math.random() * WORDS.length)].toLowerCase();
+}
+
+function startNewWord() {
+  secret = pickWord();
+  guessed = new Set();
+  wordLocked = false;
+
+  letterInput.value = "";
+  render();
+}
+
+function startRun() {
+  wrongTotal = 0;
+  scoreWords = 0;
+  done = false;
+  wordLocked = false;
+
+  if (scoreWordsEl) scoreWordsEl.textContent = String(scoreWords);
+
+  headline.textContent = "🪢 Galgenmännchen";
+  statusTextEl.textContent = "Status: —";
+
+  startNewWord();
 }
 
 function render() {
@@ -98,59 +185,58 @@ function render() {
     .join(" ");
 
   wordDisplay.textContent = shown;
-  wrongCountEl.textContent = String(wrong);
+  wrongCountEl.textContent = String(wrongTotal);
   wordLenEl.textContent = String(secret.length);
 
   const used = Array.from(guessed).sort().join(", ").toUpperCase();
   usedLettersEl.textContent = `Benutzte Buchstaben: ${used || "—"}`;
 
   const isWin = secret.split("").every((ch) => guessed.has(ch));
-  const isLose = wrong >= MAX_WRONG;
+  const isLose = wrongTotal >= MAX_WRONG;
 
-  if (isWin) {
+  if (isLose) {
     done = true;
-    statusTextEl.textContent = "Status: ✅ Gewonnen!";
-    headline.textContent = "Du hast gewonnen!!! 🎉🥳🎊";
+    statusTextEl.textContent = `Status: ❌ Game Over! Score: ${scoreWords}`;
+    headline.textContent = "💀 Game Over!";
+    openSaveModal(); // speichern erst am Ende
+  } else if (isWin) {
+    // Wort geschafft -> Score +1, nächstes Wort
+    scoreWords++;
+    if (scoreWordsEl) scoreWordsEl.textContent = String(scoreWords);
 
-    // 🎉 Konfetti (wie Guess)
+    statusTextEl.textContent = `Status: ✅ Wort geschafft! Score: ${scoreWords}`;
+    headline.textContent = "Nice! ✅ Neues Wort...";
+
+    // 🎉 Konfetti (wie Guess) beim Wort geschafft
     if (!jsConfetti && typeof JSConfetti !== "undefined") {
       jsConfetti = new JSConfetti();
     }
     jsConfetti?.addConfetti();
 
-    if (!winHandled) {
-      winHandled = true;
-      openSaveModal();
-    }
-  } else if (isLose) {
-    done = true;
-    statusTextEl.textContent = `Status: ❌ Verloren! Wort war: ${secret.toUpperCase()}`;
-    headline.textContent = "Schade 😕 Versuch es nochmal!";
+    // kurzer Übergang
+    wordLocked = true;
+    letterInput.disabled = true;
+    guessBtn.disabled = true;
+
+    setTimeout(() => {
+      if (!done) startNewWord();
+    }, 650);
+
+    return;
   } else {
-    statusTextEl.textContent = "Status: —";
+    statusTextEl.textContent = `Status: Score: ${scoreWords}`;
   }
 
-  letterInput.disabled = done;
-  guessBtn.disabled = done;
+  // Eingabe sperren nur bei GameOver oder Übergang
+  const disabled = done || wordLocked;
+  letterInput.disabled = disabled;
+  guessBtn.disabled = disabled;
 
-  if (!done) letterInput.focus();
-}
-
-function startGame() {
-  secret = pickWord();
-  guessed = new Set();
-  wrong = 0;
-  done = false;
-  winHandled = false;
-
-  headline.textContent = "🪢 Galgenmännchen";
-  letterInput.value = "";
-
-  render();
+  if (!disabled) letterInput.focus();
 }
 
 function guessLetter() {
-  if (done) return;
+  if (done || wordLocked) return;
 
   const raw = (letterInput.value || "").toLowerCase().trim();
   letterInput.value = "";
@@ -170,7 +256,7 @@ function guessLetter() {
   guessed.add(raw);
 
   if (!secret.includes(raw)) {
-    wrong++;
+    wrongTotal++;
     headline.textContent = "Leider falsch 😐";
   } else {
     headline.textContent = "Nice 🙂";
@@ -190,7 +276,8 @@ function closeModal(el) {
 }
 
 function openSaveModal() {
-  winText.textContent = `Du hast das Wort mit ${wrong} Fehler(n) erraten. Willst du speichern?`;
+  // Save-Modal nur bei GameOver
+  winText.textContent = `Run beendet. Score: ${scoreWords} geschaffte Wort/Wörter. Willst du speichern?`;
   saveScoreModal.classList.add("show");
   setTimeout(() => winnerNameInput.focus(), 0);
 }
@@ -198,12 +285,12 @@ function openSaveModal() {
 // ===============================
 // API
 // ===============================
-async function submitScore(name, wrongCount) {
+async function submitScore(name, scoreValue) {
   try {
     const res = await fetch(API_POST, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, wrong: wrongCount }),
+      body: JSON.stringify({ name, score: scoreValue }),
     });
 
     if (!res.ok) {
@@ -257,7 +344,7 @@ function renderLeaderboard(rows) {
     card.innerHTML = `
       <div class="rank">${medals[i]}</div>
       <div class="name">${entry ? entry.name : "—"}</div>
-      <div class="tries">${entry ? `${entry.wrong} Fehler` : ""}</div>
+      <div class="tries">${entry ? `${entry.score} Wörter` : ""}</div>
     `;
 
     top3El.appendChild(card);
@@ -274,7 +361,7 @@ function renderLeaderboard(rows) {
 
   rows.slice(3).forEach((r) => {
     const li = document.createElement("li");
-    li.textContent = `${r.name} — ${r.wrong} Fehler`;
+    li.textContent = `${r.name} — ${r.score} Wörter`;
 
     if (myName && r.name === myName) {
       li.classList.add("highlight");
@@ -291,7 +378,8 @@ function sanitizeName(name) {
   if (typeof name !== "string") return null;
   const clean = name.trim();
   if (clean.length < 2 || clean.length > 20) return null;
-  if (!/^[a-zA-Z0-9 äöüÄÖÜss._-]+$/.test(clean)) return null;
+  // FIX: ß statt "ss" in der Regex
+  if (!/^[a-zA-Z0-9 äöüÄÖÜß._-]+$/.test(clean)) return null;
   return clean;
 }
 
@@ -306,7 +394,8 @@ letterInput.addEventListener("keydown", (e) => {
   }
 });
 
-newGameBtn.addEventListener("click", startGame);
+// "Neues Wort" wird jetzt "Neue Runde"
+newGameBtn.addEventListener("click", startRun);
 
 // Help modal
 openHelpBtn.addEventListener("click", () => openModal(helpModal));
@@ -339,7 +428,7 @@ saveScoreBtn.addEventListener("click", async () => {
 
   localStorage.setItem(STORAGE_WINNER, name);
 
-  const ok = await submitScore(name, wrong);
+  const ok = await submitScore(name, scoreWords);
   if (ok) {
     closeModal(saveScoreModal);
     await loadLeaderboard();
@@ -352,4 +441,4 @@ saveScoreModal.addEventListener("click", (e) => {
 });
 
 // Init
-startGame();
+startRun();

@@ -85,7 +85,7 @@
           </div>
 
           <p class="hint" style="margin-top: 10px">
-            Steuerung: Pfeiltasten ⬅️⬆️⬇️➡️ (oder Buttons rechts auf Mobile).
+            Steuerung: Pfeiltasten ⬅️⬆️⬇️➡️ (Desktop) • Wischen ⬅️⬆️⬇️➡️ (Mobile)
           </p>
 
           <div class="btnrow" style="justify-content: flex-start">
@@ -113,16 +113,10 @@
 
           <div>
             <h3>Mobile Steuerung</h3>
-            <p class="hint">Tippe die Buttons, um die Richtung zu ändern.</p>
-
-            <div class="btnrow" style="justify-content: center">
-              <button id="btnUp" type="button" class="secondary">⬆️</button>
-            </div>
-            <div class="btnrow" style="justify-content: center">
-              <button id="btnLeft" type="button" class="secondary">⬅️</button>
-              <button id="btnDown" type="button" class="secondary">⬇️</button>
-              <button id="btnRight" type="button" class="secondary">➡️</button>
-            </div>
+            <p class="hint">
+              Wische über das Spielfeld, um die Richtung zu ändern:
+              <strong>links / rechts / hoch / runter</strong>.
+            </p>
           </div>
 
           <div>
@@ -140,9 +134,9 @@
       <div class="modal">
         <h2>❔ Regeln</h2>
         <p class="hint">
-          Du steuerst die Schlange mit den Pfeiltasten (oder Buttons). Sammle
-          Äpfel 🍎, um Punkte zu bekommen. Das Spiel endet, wenn du in die Wand
-          oder in dich selbst fährst. Je höher dein Score, desto besser.
+          Desktop: Pfeiltasten ⬅️⬆️⬇️➡️. Mobile: Wischen ⬅️⬆️⬇️➡️ über das Spielfeld.
+          Sammle Äpfel 🍎 für Punkte. Das Spiel endet, wenn du in die Wand oder in
+          dich selbst fährst. Je höher dein Score, desto besser.
         </p>
 
         <div class="btnrow">
@@ -156,7 +150,7 @@
     <!-- ===== LEADERBOARD MODAL ===== -->
     <div class="modal-backdrop" id="leaderboardModal">
       <div class="modal">
-        <h2>🏆 Top 10 (Snake)</h2>
+        <h2>🏆 Top 10</h2>
         <div class="top3" id="top3"></div>
         <ol id="leaderboard" start="4"></ol>
 

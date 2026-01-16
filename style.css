@@ -448,7 +448,7 @@ body {
 /* Hangman: Wortanzeige darf das Layout nicht sprengen */
 #wordDisplay {
   max-width: 100%;
-  overflow-x: auto;          /* wenn zu lang: scroll statt kaputt */
+  overflow-x: auto; /* wenn zu lang: scroll statt kaputt */
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
 }
@@ -460,4 +460,44 @@ body {
     font-size: 22px !important;
   }
 }
+
+/* =========================
+   HERO Logo Backdrop (Startseite)
+========================= */
+
+.hero-logo {
+  position: absolute;
+  left: 50%;
+  top: 0px;            /* Höhe anpassen, falls du es höher/tiefer willst */
+  transform: translateX(-50%);
+  width: min(680px, 92vw);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 1;         /* Stärke */
+  filter: blur(1.5px);   /* leichter Blur */
+}
+
+.hero-logo img {
+  width: 100%;
+  height: auto;
+  display: block;
+  mix-blend-mode: screen;  /* cooler Glow-Effekt auf dunklem Hintergrund */
+}
+
+/* Damit deine Cards über dem Logo liegen */
+.app {
+  position: relative;
+  z-index: 1;
+}
+
+/* Mobile tuning */
+@media (max-width: 520px) {
+  .hero-logo {
+    top: 50px;
+    width: min(520px, 92vw);
+    opacity: 1;
+    filter: blur(1.5px);
+  }
+}
+
 

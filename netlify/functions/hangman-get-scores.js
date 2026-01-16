@@ -17,7 +17,7 @@ export default async (req) => {
       });
     }
 
-    const key = "hangmanScore";
+    const key = "hangmanScore"; // eigenes Board für Hangman
 
     const r = await fetch(
       `${url}/zrevrange/${encodeURIComponent(key)}/0/9/WITHSCORES`,
@@ -38,17 +38,23 @@ export default async (req) => {
     const rows = [];
     for (let i = 0; i < arr.length; i += 2) {
       const member = String(arr[i] ?? "");
+
+      // member: "Name::score"
       const parts = member.split("::");
       const name = (parts[0] || "?").trim();
-      const wrong = Number(parts[1]);
+      const score = Number(parts[1]);
 
-      if (!name || !Number.isFinite(wrong)) continue;
-      rows.push({ name, wrong });
+      if (!name || !Number.isFinite(score)) continue;
+
+      rows.push({ name, score });
     }
 
     return new Response(JSON.stringify(rows), {
       status: 200,
-      headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store",
+      },
     });
   } catch (e) {
     return new Response(JSON.stringify({ error: "Server error", details: String(e) }), {

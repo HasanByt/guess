@@ -22,12 +22,6 @@ const startBtn = document.getElementById("startBtn");
 const pauseBtn = document.getElementById("pauseBtn");
 const restartBtn = document.getElementById("restartBtn");
 
-// Mobile buttons
-const btnUp = document.getElementById("btnUp");
-const btnDown = document.getElementById("btnDown");
-const btnLeft = document.getElementById("btnLeft");
-const btnRight = document.getElementById("btnRight");
-
 // Help modal
 const openHelpBtn = document.getElementById("openHelpBtn");
 const helpModal = document.getElementById("helpModal");
@@ -405,12 +399,6 @@ window.addEventListener("keydown", (e) => {
   else if (k === "ArrowLeft") setDirection(-1, 0);
   else if (k === "ArrowRight") setDirection(1, 0);
 });
-
-// Mobile Buttons (schneller als click)
-btnUp?.addEventListener("pointerdown", () => setDirection(0, -1));
-btnDown?.addEventListener("pointerdown", () => setDirection(0, 1));
-btnLeft?.addEventListener("pointerdown", () => setDirection(-1, 0));
-btnRight?.addEventListener("pointerdown", () => setDirection(1, 0));
 
 startBtn.addEventListener("click", startGame);
 pauseBtn.addEventListener("click", togglePause);

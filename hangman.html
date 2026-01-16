@@ -18,6 +18,7 @@
 
   <body>
     <div class="app">
+      <!-- ===== HEADER ===== -->
       <header>
         <div class="brand">
           <div class="logo">🪢</div>
@@ -43,7 +44,7 @@
       </header>
 
       <div class="grid">
-        <!-- MAIN GAME -->
+        <!-- ===== MAIN GAME ===== -->
         <section class="card">
           <div class="headline">
             <h1 id="headline">🪢 Galgenmännchen</h1>
@@ -51,14 +52,21 @@
             <div class="meta">
               <span class="pill">
                 <span class="spark"></span>
-                Fehler: <span id="wrongCount">0</span>/<span id="maxWrong">6</span>
+                Fehler:
+                <span id="wrongCount">0</span>/<span id="maxWrong">6</span>
               </span>
+
               <span class="pill">
                 Wortlänge: <span id="wordLen">—</span>
+              </span>
+
+              <span class="pill">
+                Score: <span id="scoreWords">0</span>
               </span>
             </div>
           </div>
 
+          <!-- WORD -->
           <div
             id="wordDisplay"
             class="card"
@@ -75,6 +83,7 @@
             —
           </div>
 
+          <!-- INPUT -->
           <div style="margin-top: 14px">
             <div class="input-wrap">
               <input
@@ -95,19 +104,19 @@
 
             <div class="btnrow" style="justify-content: flex-start">
               <button id="newGameBtn" type="button" class="secondary">
-                Neues Wort
+                Neue Runde
               </button>
             </div>
           </div>
         </section>
 
-        <!-- SIDE -->
+        <!-- ===== SIDE ===== -->
         <aside class="card side">
           <div>
             <h3>Spiel-Regeln</h3>
             <p class="hint">
-              Errate das geheime Wort. Du darfst maximal
-              <strong>6</strong> Fehler machen.
+              Errate Wort für Wort. Du spielst so lange weiter, bis du
+              <strong>6 Fehler</strong> erreicht hast.
             </p>
             <div class="range">
               <span>Max Fehler</span>
@@ -131,9 +140,11 @@
       <div class="modal">
         <h2>❔ Regeln</h2>
         <p class="hint">
-          Gib pro Versuch genau einen Buchstaben ein. Richtige Buchstaben werden
-          im Wort aufgedeckt. Falsche Buchstaben erhöhen deinen Fehlerzähler.
-          Bei <strong>6</strong> Fehlern ist das Spiel vorbei.
+          Du errätst Buchstaben eines Wortes. Für jedes falsch geratene Zeichen
+          bekommst du einen Fehler. Das Spiel läuft weiter über mehrere Wörter.
+          Bei <strong>6 Fehlern</strong> ist die Runde vorbei.
+          <br /><br />
+          <strong>Score = Anzahl geschaffter Wörter</strong>.
         </p>
 
         <div class="btnrow">
@@ -147,7 +158,7 @@
     <!-- ===== LEADERBOARD MODAL ===== -->
     <div class="modal-backdrop" id="leaderboardModal">
       <div class="modal">
-        <h2>🏆 Top 10 (Hangman)</h2>
+        <h2>🏆 Top 10</h2>
         <div class="top3" id="top3"></div>
         <ol id="leaderboard" start="4"></ol>
 
@@ -162,7 +173,7 @@
     <!-- ===== SAVE SCORE MODAL ===== -->
     <div class="modal-backdrop" id="saveScoreModal">
       <div class="modal">
-        <h2>🎉 Gewonnen!</h2>
+        <h2>💀 Game Over!</h2>
 
         <div class="row">
           <div id="winText" style="font-weight: 700"></div>
