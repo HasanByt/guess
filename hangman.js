@@ -88,7 +88,7 @@ const WORDS = [
   "herausforderung",
 ];
 
-const MAX_WRONG = 6;
+const MAX_WRONG = 12;
 
 // ===== DOM =====
 const headline = document.getElementById("headline");
