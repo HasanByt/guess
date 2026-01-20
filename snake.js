@@ -391,14 +391,23 @@ function sanitizeName(name) {
 // Events
 // ===============================
 
-// Keyboard
+// Keyboard (Arrow Keys + WASD)
 window.addEventListener("keydown", (e) => {
-  const k = e.key;
-  if (k === "ArrowUp") setDirection(0, -1);
-  else if (k === "ArrowDown") setDirection(0, 1);
-  else if (k === "ArrowLeft") setDirection(-1, 0);
-  else if (k === "ArrowRight") setDirection(1, 0);
+  const k = e.key.toLowerCase();
+
+  if (k === "arrowup" || k === "w") {
+    setDirection(0, -1);
+  } else if (k === "arrowdown" || k === "s") {
+    setDirection(0, 1);
+  } else if (k === "arrowleft" || k === "a") {
+    setDirection(-1, 0);
+  } else if (k === "arrowright" || k === "d") {
+    setDirection(1, 0);
+  }
 });
+
+
+
 
 startBtn.addEventListener("click", startGame);
 pauseBtn.addEventListener("click", togglePause);
