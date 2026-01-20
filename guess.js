@@ -1,7 +1,7 @@
 // ===============================
 // Number Guessing Game
 // Online Leaderboard (Netlify)
-// Premium: Top3 Cards + Highlight + Warm/Kalt
+// Top3 Cards + Highlight + Warm/Kalt
 // ===============================
 
 let numberToGuess = Math.floor(Math.random() * 101); // 0 - 100
@@ -148,7 +148,7 @@ function closeSaveModal() {
 }
 
 // ===============================
-// Premium: Warm/Kalt
+// Warm/Kalt
 // ===============================
 
 function resetHeat() {
@@ -223,7 +223,7 @@ async function loadLeaderboard() {
 }
 
 // ===============================
-// Premium: Top3 Cards + Highlight
+// Top3 Cards + Highlight
 // ===============================
 
 function renderLeaderboard(rows) {
