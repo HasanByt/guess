@@ -505,20 +505,6 @@ li {
    Startseite – Highscores
 ========================= */
 
-.home-score-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-top: 14px;
-}
-
-.home-score-card {
-  border: 1px solid var(--border);
-  background: var(--card-strong);
-  border-radius: 16px;
-  padding: 14px;
-}
-
 .home-score-card ol {
   list-style: none;
   padding-left: 0;
@@ -531,9 +517,3 @@ li {
   font-size: 15px;
 }
 
-/* Mobile: untereinander */
-@media (max-width: 860px) {
-  .home-score-grid {
-    grid-template-columns: 1fr;
-  }
-}

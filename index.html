@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
@@ -47,28 +47,24 @@
             </div>
 
             <div class="home-score-grid">
-              <!-- GUESS -->
               <div class="home-score-card">
                 <h3>🎯 Nummer erraten</h3>
-                <ol id="homeGuessTop3">
-                  <li>Lade…</li>
-                </ol>
+                <ol id="homeGuessTop3"><li>Lade…</li></ol>
               </div>
 
-              <!-- HANGMAN -->
               <div class="home-score-card">
                 <h3>🪢 Galgenmännchen</h3>
-                <ol id="homeHangmanTop3">
-                  <li>Lade…</li>
-                </ol>
+                <ol id="homeHangmanTop3"><li>Lade…</li></ol>
               </div>
 
-              <!-- SNAKE -->
               <div class="home-score-card">
                 <h3>🐍 Snake</h3>
-                <ol id="homeSnakeTop3">
-                  <li>Lade…</li>
-                </ol>
+                <ol id="homeSnakeTop3"><li>Lade…</li></ol>
+              </div>
+
+              <div class="home-score-card">
+                <h3>🧩 Word Puzzle</h3>
+                <ol id="homeWordPuzzleTop3"><li>Lade…</li></ol>
               </div>
             </div>
           </section>
@@ -82,7 +78,6 @@
 
       <!-- GAME CARDS -->
       <section class="home-grid">
-        <!-- GUESS GAME -->
         <div class="card game-card">
           <div class="card-content">
             <div class="headline">
@@ -100,7 +95,6 @@
           </div>
         </div>
 
-        <!-- HANGMAN -->
         <div class="card game-card">
           <div class="card-content">
             <div class="headline">
@@ -117,7 +111,6 @@
           </div>
         </div>
 
-        <!-- SNAKE -->
         <div class="card game-card">
           <div class="card-content">
             <div class="headline">
@@ -134,9 +127,25 @@
             </a>
           </div>
         </div>
+
+        <div class="card game-card">
+          <div class="card-content">
+            <div class="headline">
+              <h2>🧩 Word Puzzle</h2>
+              <p class="hint">
+                Ordne die Buchstaben richtig und bilde möglichst viele Wörter.
+                Je mehr Wörter, desto besser dein Rang.
+              </p>
+            </div>
+          </div>
+          <div class="btnrow">
+            <a href="wordpuzzle.html" style="text-decoration: none">
+              <button>Jetzt spielen →</button>
+            </a>
+          </div>
+        </div>
       </section>
 
-      <!-- OPTIONAL: kleiner Hint unten -->
       <section class="card" style="text-align: center">
         <p class="hint">
           💡Spiele alle Games – nur wahre Legenden stehen überall auf Platz 1.

@@ -23,6 +23,11 @@ async function loadAllHomeScores() {
       elId: "homeSnakeTop3",
       type: "snake",
     }),
+    loadTop3({
+      url: "/.netlify/functions/wordpuzzle-get-scores",
+      elId: "homeWordPuzzleTop3",
+      type: "wordpuzzle",
+    }),
   ]);
 }
 
@@ -61,22 +66,26 @@ function renderTop3(el, rows, type) {
       const name = (r?.name || "—").toString();
 
       let value = "—";
+
       if (type === "guess") {
-        // guess: meistens tries (oder score fallback)
+        // guess: tries (oder score fallback)
         const tries = Number.isFinite(Number(r?.tries))
           ? Number(r.tries)
           : Number.isFinite(Number(r?.score))
           ? Number(r.score)
           : null;
+
         value = tries === null ? "—" : `${tries} Versuche`;
       } else if (type === "hangman") {
-        // hangman: entweder score (Wörter) oder wrong (Fehler)
+        // hangman: score (Wörter) oder wrong (Fehler)
         if (Number.isFinite(Number(r?.score))) value = `${Number(r.score)} Wörter`;
         else if (Number.isFinite(Number(r?.wrong))) value = `${Number(r.wrong)} Fehler`;
       } else if (type === "snake") {
-        // snake: score
-        const score = Number.isFinite(Number(r?.score)) ? Number(r.score) : null;
-        value = score === null ? "—" : `${score} Punkte`;
+        const s = Number.isFinite(Number(r?.score)) ? Number(r.score) : null;
+        value = s === null ? "—" : `${s} Punkte`;
+      } else if (type === "wordpuzzle") {
+        const s = Number.isFinite(Number(r?.score)) ? Number(r.score) : null;
+        value = s === null ? "—" : `${s} Wörter`;
       }
 
       return `<li>${medals[i]} ${escapeHtml(name)} — ${escapeHtml(value)}</li>`;

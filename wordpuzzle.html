@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Word Puzzle • Gaming MAIT's</title>
+
+    <!-- Modern Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="app">
+      <header>
+        <div class="brand">
+          <div class="logo">🧩</div>
+          <div>
+            <p class="title">Gaming MAIT's</p>
+            <p class="subtitle">Word Puzzle Mode</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <a href="index.html" style="text-decoration: none">
+            <button type="button" class="secondary">← Startseite</button>
+          </a>
+
+          <button id="openLeaderboardBtn" type="button" class="secondary">
+            🏆 Highscores
+          </button>
+
+          <button id="openHelpBtn" type="button" class="secondary">
+            ❔ Regeln
+          </button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <!-- MAIN -->
+        <section class="card">
+          <div class="headline">
+            <h1 id="headline">🧩 Word Puzzle</h1>
+
+            <div class="meta">
+              <span class="pill">
+                ⏱️ Zeit: <span id="timeText">2:00</span>
+              </span>
+              <span class="pill">
+                ✅ Wörter: <span id="scoreText">0</span>
+              </span>
+              <span class="pill" id="bestInfo">
+                <span class="spark"></span> Global: —
+              </span>
+            </div>
+          </div>
+
+          <div
+            class="card"
+            style="
+              background: var(--card-strong);
+              padding: 16px;
+              border-radius: 16px;
+              text-align: center;
+            "
+          >
+            <p class="hint" style="margin-bottom: 10px">
+              Entschlüssle das Wort:
+            </p>
+
+            <div
+              id="scrambleText"
+              style="
+                font-weight: 900;
+                font-size: clamp(26px, 4vw, 44px);
+                letter-spacing: 4px;
+              "
+            >
+              —
+            </div>
+
+            <p class="hint" style="margin-top: 10px">
+              Tipp: Wortlänge <strong><span id="lenText">—</span></strong>
+            </p>
+
+            <div class="input-wrap" style="margin-top: 12px">
+              <input
+                id="answerInput"
+                type="text"
+                placeholder="Dein Wort…"
+                autocomplete="off"
+              />
+              <button id="submitBtn" type="button">OK</button>
+            </div>
+
+            <p class="hint" id="statusText" style="margin-top: 10px">
+              Status: —
+            </p>
+
+            <div class="btnrow" style="justify-content: flex-start">
+              <button id="startBtn" type="button">Start</button>
+              <button id="skipBtn" type="button" class="secondary">Skip</button>
+              <button id="restartBtn" type="button" class="secondary">
+                Neustart
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- SIDE -->
+        <aside class="card side">
+          <div>
+            <h3>Spiel-Regeln</h3>
+            <p class="hint">
+              Du hast <strong>2:00 Minuten</strong>. Errate so viele Wörter wie
+              möglich. Jedes richtige Wort gibt <strong>+1</strong>.
+            </p>
+            <div class="range">
+              <span>Zeit</span>
+              <strong>2:00</strong>
+            </div>
+            <div class="range">
+              <span>Punkte pro Wort</span>
+              <strong>+1</strong>
+            </div>
+          </div>
+
+          
+
+          <div>
+            <h3>Pro-Tipp</h3>
+            <p class="hint">
+              Achte auf typische Endungen wie <strong>-en</strong>,
+              <strong>-ung</strong>, <strong>-heit</strong>.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ===== HELP MODAL ===== -->
+    <div class="modal-backdrop" id="helpModal">
+      <div class="modal">
+        <h2>❔ Regeln</h2>
+        <p class="hint">
+          Drücke <strong>Start</strong>. Du bekommst ein gemischtes Wort.
+          Tippe das richtige Wort ein und bestätige mit <strong>OK</strong> oder
+          Enter. Du hast 2:00 Minuten. Score = gelöste Wörter. Am Ende kannst du
+          deinen Highscore speichern.
+        </p>
+
+        <div class="btnrow">
+          <button id="closeHelpBtn" type="button" class="secondary">
+            Schliessen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LEADERBOARD MODAL ===== -->
+    <div class="modal-backdrop" id="leaderboardModal">
+      <div class="modal">
+        <h2>🏆 Top 10 (Word Puzzle)</h2>
+        <div class="top3" id="top3"></div>
+        <ol id="leaderboard" start="4"></ol>
+
+        <div class="btnrow">
+          <button id="closeLeaderboardBtn" type="button" class="secondary">
+            Schliessen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SAVE SCORE MODAL ===== -->
+    <div class="modal-backdrop" id="saveScoreModal">
+      <div class="modal">
+        <h2>⏱️ Zeit vorbei!</h2>
+
+        <div class="row">
+          <div id="winText" style="font-weight: 700"></div>
+
+          <label>
+            Dein Name:
+            <input
+              id="winnerName"
+              type="text"
+              placeholder="Name"
+              maxlength="20"
+              autocomplete="nickname"
+            />
+          </label>
+        </div>
+
+        <div class="btnrow">
+          <button id="skipSaveBtn" type="button" class="secondary">
+            Nicht speichern
+          </button>
+          <button id="saveScoreBtn" type="button">Highscore speichern</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+    <script src="wordpuzzle.js"></script>
+  </body>
+</html>
