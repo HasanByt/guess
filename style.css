@@ -41,7 +41,8 @@ body {
   font-family: Inter, system-ui, sans-serif;
   color: var(--text);
 
-  background: radial-gradient(
+  background:
+    radial-gradient(
       1200px 700px at 20% 10%,
       rgba(124, 92, 255, 0.35),
       transparent 55%
@@ -64,7 +65,6 @@ body {
   position: relative;
 }
 
-
 .app {
   width: min(980px, 100%);
   display: grid;
@@ -73,7 +73,6 @@ body {
   position: relative;
   z-index: 1;
 }
-
 
 header {
   display: flex;
@@ -476,20 +475,20 @@ li {
 .hero-logo {
   position: absolute;
   left: 50%;
-  top: 0px;            /* Höhe anpassen, falls du es höher/tiefer willst */
+  top: 0px; /* Höhe anpassen, falls du es höher/tiefer willst */
   transform: translateX(-50%);
   width: min(680px, 92vw);
   pointer-events: none;
   z-index: 0;
-  opacity: 1;         /* Stärke */
-  filter: blur(1.5px);   /* leichter Blur */
+  opacity: 1; /* Stärke */
+  filter: blur(1.5px); /* leichter Blur */
 }
 
 .hero-logo img {
   width: 100%;
   height: auto;
   display: block;
-  mix-blend-mode: screen;  /* cooler Glow-Effekt auf dunklem Hintergrund */
+  mix-blend-mode: screen; /* cooler Glow-Effekt auf dunklem Hintergrund */
 }
 
 /* Mobile tuning */
@@ -518,6 +517,12 @@ li {
   background: var(--card-strong);
   border-radius: 16px;
   padding: 14px;
+}
+
+.home-score-card ol {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
 }
 
 .home-score-card h3 {
