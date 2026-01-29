@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flappy Bird • Gaming MAIT's</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="app">
+      <header>
+        <div class="brand">
+          <div class="logo">🐦</div>
+          <div>
+            <p class="title">Gaming MAIT's</p>
+            <p class="subtitle">Flappy Mode</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <a href="index.html" style="text-decoration: none">
+            <button type="button" class="secondary">← Startseite</button>
+          </a>
+
+          <button id="restartBtn" type="button" class="secondary">Neustart</button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <!-- MAIN -->
+        <section class="card">
+          <div class="headline">
+            <h1 id="headline">🐦 Flappy Bird</h1>
+
+            <div class="meta">
+              <span class="pill">
+                <span class="spark"></span> Score: <span id="scoreText">0</span>
+              </span>
+              <span class="pill">Best: <span id="bestText">0</span></span>
+              <span class="pill">Status: <span id="statusText">Ready</span></span>
+            </div>
+          </div>
+
+          <div
+            class="card"
+            style="
+              background: var(--card-strong);
+              padding: 12px;
+              border-radius: 16px;
+            "
+          >
+            <canvas
+              id="gameCanvas"
+              width="520"
+              height="650"
+              style="
+                width: 100%;
+                height: auto;
+                display: block;
+                border-radius: 14px;
+                border: 1px solid var(--border);
+                background: rgba(0, 0, 0, 0.18);
+                touch-action: manipulation;
+              "
+            ></canvas>
+          </div>
+
+          <p class="hint" style="margin-top: 10px">
+            Steuerung: <strong>Space</strong> / Klick / Tap = Flap. (Keine Sounds 🎧🚫)
+          </p>
+        </section>
+
+        <!-- SIDE -->
+        <aside class="card side">
+          <div>
+            <h3>Spiel-Regeln</h3>
+            <p class="hint">
+              Flieg durch die Lücken der Rohre. Jede geschaffte Lücke gibt
+              <strong>+1</strong> Punkt. Crash = Game Over.
+            </p>
+            <div class="range">
+              <span>Punkte</span>
+              <strong>+1 pro Rohr</strong>
+            </div>
+          </div>
+
+          <div>
+            <h3>Pro-Tipp</h3>
+            <p class="hint">
+              Kurze Taps statt dauernd spammen. Ziel: gleichmäßige Höhe halten.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <script src="flappy.js"></script>
+  </body>
+</html>

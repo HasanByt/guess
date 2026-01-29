@@ -28,6 +28,12 @@ async function loadAllHomeScores() {
       elId: "homeWordPuzzleTop3",
       type: "wordpuzzle",
     }),
+
+    loadTop3({
+      url: "/.netlify/functions/flappy-get-scores",
+      elId: "homeFlappyTop3",
+      type: "flappy",
+    }),
   ]);
 }
 
@@ -72,14 +78,16 @@ function renderTop3(el, rows, type) {
         const tries = Number.isFinite(Number(r?.tries))
           ? Number(r.tries)
           : Number.isFinite(Number(r?.score))
-          ? Number(r.score)
-          : null;
+            ? Number(r.score)
+            : null;
 
         value = tries === null ? "—" : `${tries} Versuche`;
       } else if (type === "hangman") {
         // hangman: score (Wörter) oder wrong (Fehler)
-        if (Number.isFinite(Number(r?.score))) value = `${Number(r.score)} Wörter`;
-        else if (Number.isFinite(Number(r?.wrong))) value = `${Number(r.wrong)} Fehler`;
+        if (Number.isFinite(Number(r?.score)))
+          value = `${Number(r.score)} Wörter`;
+        else if (Number.isFinite(Number(r?.wrong)))
+          value = `${Number(r.wrong)} Fehler`;
       } else if (type === "snake") {
         const s = Number.isFinite(Number(r?.score)) ? Number(r.score) : null;
         value = s === null ? "—" : `${s} Punkte`;
