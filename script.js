@@ -34,6 +34,12 @@ async function loadAllHomeScores() {
       elId: "homeFlappyTop3",
       type: "flappy",
     }),
+
+    loadTop3({
+      url: "/.netlify/functions/blackjack-get-scores",
+      elId: "homeBlackjackTop3",
+      type: "blackjack",
+    }),
   ]);
 }
 
@@ -94,6 +100,13 @@ function renderTop3(el, rows, type) {
       } else if (type === "wordpuzzle") {
         const s = Number.isFinite(Number(r?.score)) ? Number(r.score) : null;
         value = s === null ? "—" : `${s} Wörter`;
+      }
+      else if (type === "flappy") {
+        const s = Number.isFinite(Number(r?.score)) ? Number(r.score) : null;
+        value = s === null ? "—" : `${s} Pipes`;
+      } else if (type === "blackjack") {
+        const s = Number.isFinite(Number(r?.score)) ? Number(r.score) : null;
+        value = s === null ? "—" : `${s} CHF`;
       }
 
       return `<li>${medals[i]} ${escapeHtml(name)} — ${escapeHtml(value)}</li>`;

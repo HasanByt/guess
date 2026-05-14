@@ -1,191 +1,216 @@
 <!doctype html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gaming MAIT's</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gaming MAIT's</title>
 
-  <body>
-    <div class="app">
-      <!-- HEADER -->
-      <header>
-        <div class="brand">
-          <div class="logo">🎮</div>
-          <div>
-            <p class="title">Gaming MAIT's</p>
-            <p class="subtitle">Mini Games</p>
-          </div>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="app">
+    <!-- HEADER -->
+    <header>
+      <div class="brand">
+        <div class="logo">🎮</div>
+        <div>
+          <p class="title">Gaming MAIT's</p>
+          <p class="subtitle">Mini Games</p>
         </div>
-      </header>
-
-      <!-- HERO LOGO BACKDROP -->
-      <div class="hero-logo" aria-hidden="true">
-        <img src="./public/mait_logo.png" alt="" />
       </div>
+    </header>
 
-      <!-- HERO -->
-      <section class="card" style="text-align: center">
-        <div class="headline">
-          <h1 style="font-size: clamp(28px, 4vw, 44px)">Ready to play?</h1>
-
-          <!-- HOME HIGHSCORES -->
-          <section class="card home-highscores">
-            <div class="headline" style="text-align: center">
-              <h2>Aktuelle Highscores</h2>
-              <h1>🏆</h1>
-              <h3 class="hint">Top 3</h3>
-            </div>
-
-            <div class="home-score-grid">
-              <div class="home-score-card">
-                <h3>🎯 Nummer erraten</h3>
-                <ol id="homeGuessTop3">
-                  <li>Lade…</li>
-                </ol>
-              </div>
-
-              <div class="home-score-card">
-                <h3>🪢 Galgenmännchen</h3>
-                <ol id="homeHangmanTop3">
-                  <li>Lade…</li>
-                </ol>
-              </div>
-
-              <div class="home-score-card">
-                <h3>🐍 Snake</h3>
-                <ol id="homeSnakeTop3">
-                  <li>Lade…</li>
-                </ol>
-              </div>
-
-              <div class="home-score-card">
-                <h3>🧩 Word Puzzle</h3>
-                <ol id="homeWordPuzzleTop3">
-                  <li>Lade…</li>
-                </ol>
-              </div>
-
-              <div class="home-score-card">
-                <h3>🐦 Flappy Bird</h3>
-                <ol id="homeFlappyTop3">
-                  <li>Lade…</li>
-                </ol>
-              </div>
-            </div>
-          </section>
-
-          <p class="hint" style="max-width: 520px; margin: 0 auto">
-            Fordere dein Gehirn heraus, knacke Highscores und beweise, dass du
-            der wahre <strong>MAIT-Champion</strong> bist.
-          </p>
-        </div>
-      </section>
-
-      <!-- GAME CARDS -->
-      <section class="home-grid">
-        <div class="card game-card">
-          <div class="card-content">
-            <div class="headline">
-              <h2>🎯 Nummer erraten</h2>
-              <p class="hint">
-                Errate die geheime Zahl zwischen 0 und 100. Weniger Versuche =
-                höherer Rang.
-              </p>
-            </div>
-          </div>
-          <div class="btnrow">
-            <a href="guess.html" style="text-decoration: none">
-              <button>Jetzt spielen →</button>
-            </a>
-          </div>
-        </div>
-
-        <div class="card game-card">
-          <div class="card-content">
-            <div class="headline">
-              <h2>🪢 Galgenmännchen</h2>
-              <p class="hint">
-                Errate das Wort, bevor das Männchen hängt. Jeder Fehler zählt.
-              </p>
-            </div>
-          </div>
-          <div class="btnrow">
-            <a href="hangman.html" style="text-decoration: none">
-              <button>Jetzt spielen →</button>
-            </a>
-          </div>
-        </div>
-
-        <div class="card game-card">
-          <div class="card-content">
-            <div class="headline">
-              <h2>🐍 Snake</h2>
-              <p class="hint">
-                Steuere die Schlange, sammle Äpfel und werde immer länger. Je
-                höher der Score, desto besser dein Rang.
-              </p>
-            </div>
-          </div>
-          <div class="btnrow">
-            <a href="snake.html" style="text-decoration: none">
-              <button>Jetzt spielen →</button>
-            </a>
-          </div>
-        </div>
-
-        <div class="card game-card">
-          <div class="card-content">
-            <div class="headline">
-              <h2>🧩 Word Puzzle</h2>
-              <p class="hint">
-                Ordne die Buchstaben richtig und bilde möglichst viele Wörter.
-                Je mehr Wörter, desto besser dein Rang.
-              </p>
-            </div>
-          </div>
-          <div class="btnrow">
-            <a href="wordpuzzle.html" style="text-decoration: none">
-              <button>Jetzt spielen →</button>
-            </a>
-          </div>
-        </div>
-
-        <div class="card game-card">
-          <div class="card-content">
-            <div class="headline">
-              <h2>🐦 Flappy Bird</h2>
-              <p class="hint">
-                Flappe durch die Röhren, ohne zu crashen. Jede Röhre zählt als
-                Punkt – je höher der Score, desto besser dein Rang.
-              </p>
-            </div>
-          </div>
-
-          <div class="btnrow">
-            <a href="flappy.html" style="text-decoration: none">
-              <button>Jetzt spielen →</button>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section class="card" style="text-align: center">
-        <p class="hint">
-          💡Spiele alle Games – nur wahre Legenden stehen überall auf Platz 1.
-        </p>
-      </section>
+    <!-- HERO LOGO BACKDROP -->
+    <div class="hero-logo" aria-hidden="true">
+      <img src="./public/mait_logo.png" alt="" />
     </div>
 
-    <script src="script.js"></script>
-  </body>
+    <!-- HERO -->
+    <section class="card" style="text-align: center">
+      <div class="headline">
+        <h1 style="font-size: clamp(28px, 4vw, 44px)">Ready to play?</h1>
+
+        <!-- HOME HIGHSCORES -->
+        <section class="card home-highscores">
+          <div class="headline" style="text-align: center">
+            <h2>Aktuelle Highscores</h2>
+            <h1>🏆</h1>
+            <h3 class="hint">Top 3</h3>
+          </div>
+
+          <div class="home-score-grid">
+            <div class="home-score-card">
+              <h3>🎯 Nummer erraten</h3>
+              <ol id="homeGuessTop3">
+                <li>Lade…</li>
+              </ol>
+            </div>
+
+            <div class="home-score-card">
+              <h3>🪢 Galgenmännchen</h3>
+              <ol id="homeHangmanTop3">
+                <li>Lade…</li>
+              </ol>
+            </div>
+
+            <div class="home-score-card">
+              <h3>🐍 Snake</h3>
+              <ol id="homeSnakeTop3">
+                <li>Lade…</li>
+              </ol>
+            </div>
+
+            <div class="home-score-card">
+              <h3>🧩 Word Puzzle</h3>
+              <ol id="homeWordPuzzleTop3">
+                <li>Lade…</li>
+              </ol>
+            </div>
+
+            <div class="home-score-card">
+              <h3>🐦 Flappy Bird</h3>
+              <ol id="homeFlappyTop3">
+                <li>Lade…</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="home-score-card">
+            <h3>🃏 Blackjack</h3>
+            <ol id="homeBlackjackTop3">
+              <li>Lade…</li>
+            </ol>
+          </div>
+        </section>
+
+        <p class="hint" style="max-width: 520px; margin: 0 auto">
+          Fordere dein Gehirn heraus, knacke Highscores und beweise, dass du
+          der wahre <strong>MAIT-Champion</strong> bist.
+        </p>
+      </div>
+    </section>
+
+    <!-- GAME CARDS -->
+    <section class="home-grid">
+      <div class="card game-card">
+        <div class="card-content">
+          <div class="headline">
+            <h2>🎯 Nummer erraten</h2>
+            <p class="hint">
+              Errate die geheime Zahl zwischen 0 und 100. Weniger Versuche =
+              höherer Rang.
+            </p>
+          </div>
+        </div>
+        <div class="btnrow">
+          <a href="guess.html" style="text-decoration: none">
+            <button>Jetzt spielen →</button>
+          </a>
+        </div>
+      </div>
+
+      <div class="card game-card">
+        <div class="card-content">
+          <div class="headline">
+            <h2>🪢 Galgenmännchen</h2>
+            <p class="hint">
+              Errate das Wort, bevor das Männchen hängt. Jeder Fehler zählt.
+            </p>
+          </div>
+        </div>
+        <div class="btnrow">
+          <a href="hangman.html" style="text-decoration: none">
+            <button>Jetzt spielen →</button>
+          </a>
+        </div>
+      </div>
+
+      <div class="card game-card">
+        <div class="card-content">
+          <div class="headline">
+            <h2>🐍 Snake</h2>
+            <p class="hint">
+              Steuere die Schlange, sammle Äpfel und werde immer länger. Je
+              höher der Score, desto besser dein Rang.
+            </p>
+          </div>
+        </div>
+        <div class="btnrow">
+          <a href="snake.html" style="text-decoration: none">
+            <button>Jetzt spielen →</button>
+          </a>
+        </div>
+      </div>
+
+      <div class="card game-card">
+        <div class="card-content">
+          <div class="headline">
+            <h2>🧩 Word Puzzle</h2>
+            <p class="hint">
+              Ordne die Buchstaben richtig und bilde möglichst viele Wörter.
+              Je mehr Wörter, desto besser dein Rang.
+            </p>
+          </div>
+        </div>
+        <div class="btnrow">
+          <a href="wordpuzzle.html" style="text-decoration: none">
+            <button>Jetzt spielen →</button>
+          </a>
+        </div>
+      </div>
+
+      <div class="card game-card">
+        <div class="card-content">
+          <div class="headline">
+            <h2>🐦 Flappy Bird</h2>
+            <p class="hint">
+              Flappe durch die Röhren, ohne zu crashen. Jede Röhre zählt als
+              Punkt – je höher der Score, desto besser dein Rang.
+            </p>
+          </div>
+        </div>
+
+        <div class="btnrow">
+          <a href="flappy.html" style="text-decoration: none">
+            <button>Jetzt spielen →</button>
+          </a>
+        </div>
+      </div>
+
+      <!-- BLACKJACK -->
+      <div class="card game-card">
+        <div class="card-content">
+          <div class="headline">
+            <h2>🃏 Blackjack</h2>
+            <p class="hint">
+              Starte mit 1000.–, setze clever und erreiche das höchste Guthaben.
+              Höchstes Guthaben = besserer Rang.
+            </p>
+          </div>
+        </div>
+
+        <div class="btnrow">
+          <a href="blackjack.html" style="text-decoration: none">
+            <button>Jetzt spielen →</button>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="text-align: center">
+      <p class="hint">
+        💡Spiele alle Games – nur wahre Legenden stehen überall auf Platz 1.
+      </p>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
 </html>

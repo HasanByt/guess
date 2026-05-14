@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blackjack • Gaming MAIT's</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="app">
+      <header>
+        <div class="brand">
+          <div class="logo">🃏</div>
+          <div>
+            <p class="title">Gaming MAIT's</p>
+            <p class="subtitle">Blackjack Mode</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <a href="index.html" style="text-decoration: none">
+            <button type="button" class="secondary">← Startseite</button>
+          </a>
+
+          <button id="openLeaderboardBtn" type="button" class="secondary">
+            🏆 Highscores
+          </button>
+
+          <button id="openHelpBtn" type="button" class="secondary">
+            ❔ Regeln
+          </button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <section class="card">
+          <div class="headline">
+            <h1 id="headline">🃏 Blackjack</h1>
+
+            <div class="meta">
+              <span class="pill" id="bestInfo">
+                <span class="spark"></span> Global: —
+              </span>
+              <span class="pill">Guthaben: <span id="balanceText">1000</span> CHF</span>
+              <span class="pill">Best: <span id="bestBalanceText">1000</span> CHF</span>
+            </div>
+          </div>
+
+          <div class="card" style="background: var(--card-strong); margin-bottom: 14px">
+            <h3>Dealer</h3>
+            <p class="hint">Wert: <span id="dealerValueText">—</span></p>
+            <div id="dealerCards" class="blackjack-cards"></div>
+          </div>
+
+          <div class="card" style="background: var(--card-strong)">
+            <h3>Du</h3>
+            <p class="hint">Wert: <span id="playerValueText">—</span></p>
+            <div id="playerCards" class="blackjack-cards"></div>
+          </div>
+
+          <div style="margin-top: 14px">
+            <div class="input-wrap">
+              <input
+                id="betInput"
+                type="number"
+                min="10"
+                step="10"
+                value="100"
+                placeholder="Einsatz"
+              />
+              <button id="dealBtn" type="button">Deal</button>
+            </div>
+
+            <p class="hint" id="statusText" style="margin-top: 10px">
+              Status: Einsatz wählen und Deal drücken.
+            </p>
+
+            <div class="btnrow" style="justify-content: flex-start">
+              <button id="hitBtn" type="button" class="secondary">Hit</button>
+              <button id="standBtn" type="button" class="secondary">Stand</button>
+              <button id="restartBtn" type="button" class="secondary">
+                Neustart
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="card side">
+          <div>
+            <h3>Spiel-Regeln</h3>
+            <p class="hint">
+              Starte mit <strong>1000 CHF</strong>. Ziel ist es, näher an
+              <strong>21</strong> zu kommen als der Dealer, ohne darüber zu gehen.
+            </p>
+            <div class="range">
+              <span>Startguthaben</span>
+              <strong>1000 CHF</strong>
+            </div>
+          </div>
+
+          <div>
+            <h3>Highscore</h3>
+            <p class="hint">
+              Gespeichert wird dein <strong>höchstes erreichtes Guthaben</strong>,
+              nicht nur dein Endstand.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- HELP MODAL -->
+    <div class="modal-backdrop" id="helpModal">
+      <div class="modal">
+        <h2>❔ Regeln</h2>
+        <p class="hint">
+          Du startest mit 1000 CHF. Wähle einen Einsatz und drücke Deal.
+          Mit Hit ziehst du eine weitere Karte. Mit Stand ist der Dealer dran.
+          Wenn du über 21 kommst, verlierst du den Einsatz. Blackjack zahlt 1.5x.
+        </p>
+
+        <div class="btnrow">
+          <button id="closeHelpBtn" type="button" class="secondary">
+            Schliessen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD MODAL -->
+    <div class="modal-backdrop" id="leaderboardModal">
+      <div class="modal">
+        <h2>🏆 Top 10 (Blackjack)</h2>
+        <div class="top3" id="top3"></div>
+        <ol id="leaderboard" start="4"></ol>
+
+        <div class="btnrow">
+          <button id="closeLeaderboardBtn" type="button" class="secondary">
+            Schliessen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAVE SCORE MODAL -->
+    <div class="modal-backdrop" id="saveScoreModal">
+      <div class="modal">
+        <h2>🏁 Spiel beendet</h2>
+
+        <div class="row">
+          <div id="winText" style="font-weight: 700"></div>
+
+          <label>
+            Dein Name:
+            <input
+              id="winnerName"
+              type="text"
+              placeholder="Name"
+              maxlength="20"
+              autocomplete="nickname"
+            />
+          </label>
+        </div>
+
+        <div class="btnrow">
+          <button id="skipSaveBtn" type="button" class="secondary">
+            Nicht speichern
+          </button>
+          <button id="saveScoreBtn" type="button">Highscore speichern</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="blackjack.js"></script>
+  </body>
+</html>
