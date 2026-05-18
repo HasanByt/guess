@@ -40,7 +40,7 @@ export default async (req) => {
     const key = "flappyScore";
     const member = `${cleanName}::${cleanScore}`;
 
-    // größerer Score = besser, bei Gleichstand gewinnt der neuere (timestamp)
+    // grösserer Score = besser, bei Gleichstand gewinnt der neuere (timestamp)
     const BIG = 10_000_000_000_000; // 1e13
     const ts = Date.now();
     const compositeScore = cleanScore * BIG + ts;
@@ -75,6 +75,6 @@ function sanitizeName(name) {
   if (typeof name !== "string") return null;
   const clean = name.trim();
   if (clean.length < 2 || clean.length > 20) return null;
-  if (!/^[a-zA-Z0-9 äöüÄÖÜß._-]+$/.test(clean)) return null;
+  if (!/^[a-zA-Z0-9 äöüÄÖÜss._-]+$/.test(clean)) return null;
   return clean;
 }

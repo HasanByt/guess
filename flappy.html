@@ -18,9 +18,11 @@
 
   <body>
     <div class="app">
+      <!-- HEADER -->
       <header>
         <div class="brand">
           <div class="logo">🐦</div>
+
           <div>
             <p class="title">Gaming MAIT's</p>
             <p class="subtitle">Flappy Mode</p>
@@ -29,10 +31,21 @@
 
         <div class="header-actions">
           <a href="index.html" style="text-decoration: none">
-            <button type="button" class="secondary">← Startseite</button>
+            <button
+              type="button"
+              class="secondary"
+            >
+              ← Startseite
+            </button>
           </a>
 
-          <button id="restartBtn" type="button" class="secondary">Neustart</button>
+          <button
+            id="restartBtn"
+            type="button"
+            class="secondary"
+          >
+            Neustart
+          </button>
         </div>
       </header>
 
@@ -44,10 +57,20 @@
 
             <div class="meta">
               <span class="pill">
-                <span class="spark"></span> Score: <span id="scoreText">0</span>
+                <span class="spark"></span>
+                Score:
+                <span id="scoreText">0</span>
               </span>
-              <span class="pill">Best: <span id="bestText">0</span></span>
-              <span class="pill">Status: <span id="statusText">Ready</span></span>
+
+              <span class="pill">
+                Best:
+                <span id="bestText">0</span>
+              </span>
+
+              <span class="pill">
+                Status:
+                <span id="statusText">Ready</span>
+              </span>
             </div>
           </div>
 
@@ -76,7 +99,10 @@
           </div>
 
           <p class="hint" style="margin-top: 10px">
-            Steuerung: <strong>Space</strong> / Klick / Tap = Flap.
+            Steuerung:
+            <strong>Space</strong> /
+            Klick /
+            Tap = Flap.
           </p>
         </section>
 
@@ -84,10 +110,15 @@
         <aside class="card side">
           <div>
             <h3>Spiel-Regeln</h3>
+
             <p class="hint">
-              Flieg durch die Lücken der Rohre. Jede geschaffte Lücke gibt
-              <strong>+1</strong> Punkt. Crash = Game Over.
+              Flieg durch die Lücken der Rohre.
+              Jede geschaffte Lücke gibt
+              <strong>+1</strong>
+              Punkt.
+              Crash = Game Over.
             </p>
+
             <div class="range">
               <span>Punkte</span>
               <strong>+1 pro Rohr</strong>
@@ -96,11 +127,52 @@
 
           <div>
             <h3>Pro-Tipp</h3>
+
             <p class="hint">
-              Kurze Taps statt dauernd spammen. Ziel: gleichmäßige Höhe halten.
+              Kurze Taps statt dauernd spammen.
+              Ziel: gleichmässige Höhe halten.
             </p>
           </div>
         </aside>
+      </div>
+    </div>
+
+    <!-- SAVE SCORE MODAL -->
+    <div
+      class="modal-backdrop"
+      id="saveScoreModal"
+    >
+      <div class="modal">
+        <div class="headline">
+          <h2>🏆 Highscore speichern</h2>
+
+          <p class="hint">
+            Dein Score:
+            <strong id="finalScoreText">0</strong>
+          </p>
+        </div>
+
+        <div class="row">
+          <input
+            id="winnerName"
+            type="text"
+            maxlength="20"
+            placeholder="Dein Name"
+          />
+        </div>
+
+        <div class="btnrow">
+          <button
+            id="skipSaveBtn"
+            class="secondary"
+          >
+            Überspringen
+          </button>
+
+          <button id="saveScoreBtn">
+            Speichern
+          </button>
+        </div>
       </div>
     </div>
 
