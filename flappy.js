@@ -82,12 +82,7 @@ async function loadAssets() {
   ];
 
   for (let i = 0; i <= 9; i++) {
-    jobs.push(
-      loadImage(
-        "n" + i,
-        ASSET_BASE + "numbers/" + i + ".png",
-      ),
-    );
+    jobs.push(loadImage("n" + i, ASSET_BASE + "numbers/" + i + ".png"));
   }
 
   await Promise.all(jobs);
@@ -109,10 +104,9 @@ let started = false;
 let gameOver = false;
 
 let score = 0;
+let finalScore = 0;
 
-let best = Number(
-  localStorage.getItem("flappy_best") || "0",
-);
+let best = Number(localStorage.getItem("flappy_best") || "0");
 
 bestText.textContent = String(best);
 
@@ -168,13 +162,9 @@ function spawnPipe(extraX = 0) {
   const pipeW = scale(78);
 
   const minTop = scale(60);
-  const maxTop =
-    canvas.height - scale(200) - gap;
+  const maxTop = canvas.height - scale(200) - gap;
 
-  const topH = Math.floor(
-    minTop +
-      Math.random() * (maxTop - minTop),
-  );
+  const topH = Math.floor(minTop + Math.random() * (maxTop - minTop));
 
   pipes.push({
     x: canvas.width + extraX,
@@ -191,7 +181,12 @@ function spawnPipe(extraX = 0) {
 
 function flap() {
   if (gameOver) {
-    resetGame();
+    const modalOpen = saveScoreModal?.classList.contains("show");
+
+    if (!modalOpen) {
+      resetGame();
+    }
+
     return;
   }
 
@@ -211,10 +206,7 @@ function flap() {
 
 function rectsOverlap(a, b) {
   return (
-    a.x < b.x + b.w &&
-    a.x + a.w > b.x &&
-    a.y < b.y + b.h &&
-    a.y + a.h > b.y
+    a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y
   );
 }
 
@@ -227,17 +219,15 @@ function endGame() {
 
   gameOver = true;
 
+  // Score sichern, bevor irgendetwas resettet wird
+  finalScore = score;
+
   statusText.textContent = "Game Over";
   headline.textContent = "💀 Game Over!";
 
-  if (score > best) {
-    best = score;
-
-    localStorage.setItem(
-      "flappy_best",
-      String(best),
-    );
-
+  if (finalScore > best) {
+    best = finalScore;
+    localStorage.setItem("flappy_best", String(best));
     bestText.textContent = String(best);
   }
 
@@ -252,12 +242,10 @@ function openSaveModal() {
   if (!saveScoreModal) return;
 
   if (winText) {
-    winText.textContent =
-      `Du hast ${score} Punkte erreicht.`;
+    winText.textContent = `Du hast ${finalScore} Punkte erreicht.`;
   }
 
-  winnerNameInput.value =
-    localStorage.getItem(STORAGE_WINNER) || "";
+  winnerNameInput.value = localStorage.getItem(STORAGE_WINNER) || "";
 
   saveScoreModal.classList.add("show");
 
@@ -283,9 +271,7 @@ function sanitizeName(name) {
     return null;
   }
 
-  if (
-    !/^[a-zA-Z0-9 äöüÄÖÜß._-]+$/.test(clean)
-  ) {
+  if (!/^[a-zA-Z0-9 äöüÄÖÜß._-]+$/.test(clean)) {
     return null;
   }
 
@@ -294,21 +280,18 @@ function sanitizeName(name) {
 
 async function submitScore(name, scoreValue) {
   try {
-    const res = await fetch(
-      "/.netlify/functions/flappy-submit-score",
-      {
-        method: "POST",
+    const res = await fetch("/.netlify/functions/flappy-submit-score", {
+      method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-          name,
-          score: scoreValue,
-        }),
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+
+      body: JSON.stringify({
+        name,
+        score: scoreValue,
+      }),
+    });
 
     return res.ok;
   } catch (e) {
@@ -327,17 +310,10 @@ function drawTiled(img, y, h, xOffset) {
   const drawH = h;
   const drawW = img.width * scaleY;
 
-  let x =
-    -((xOffset % drawW) + drawW);
+  let x = -((xOffset % drawW) + drawW);
 
   while (x < canvas.width + drawW) {
-    ctx.drawImage(
-      img,
-      x,
-      y,
-      drawW,
-      drawH,
-    );
+    ctx.drawImage(img, x, y, drawW, drawH);
 
     x += drawW;
   }
@@ -348,37 +324,19 @@ function drawPipe(pipe) {
 
   const bottomY = pipe.topH + pipe.gap;
 
-  const bottomH =
-    canvas.height -
-    scale(110) -
-    bottomY;
+  const bottomH = canvas.height - scale(110) - bottomY;
 
   // unten
-  ctx.drawImage(
-    pipeImg,
-    pipe.x,
-    bottomY,
-    pipe.w,
-    bottomH,
-  );
+  ctx.drawImage(pipeImg, pipe.x, bottomY, pipe.w, bottomH);
 
   // oben
   ctx.save();
 
-  ctx.translate(
-    pipe.x + pipe.w / 2,
-    pipe.topH / 2,
-  );
+  ctx.translate(pipe.x + pipe.w / 2, pipe.topH / 2);
 
   ctx.scale(1, -1);
 
-  ctx.drawImage(
-    pipeImg,
-    -pipe.w / 2,
-    -pipe.topH / 2,
-    pipe.w,
-    pipe.topH,
-  );
+  ctx.drawImage(pipeImg, -pipe.w / 2, -pipe.topH / 2, pipe.w, pipe.topH);
 
   ctx.restore();
 }
@@ -394,8 +352,7 @@ function drawNumber(n, x, y, size) {
     const img = IMG["n" + ch];
 
     const h = size;
-    const w =
-      (img.width / img.height) * h;
+    const w = (img.width / img.height) * h;
 
     digits.push({
       img,
@@ -411,13 +368,7 @@ function drawNumber(n, x, y, size) {
   let cx = x - totalW / 2;
 
   for (const d of digits) {
-    ctx.drawImage(
-      d.img,
-      cx,
-      y,
-      d.w,
-      d.h,
-    );
+    ctx.drawImage(d.img, cx, y, d.w, d.h);
 
     cx += d.w + scale(2);
   }
@@ -430,9 +381,7 @@ function drawNumber(n, x, y, size) {
 let last = performance.now();
 
 function update(dt) {
-  const pipeSpeed = started
-    ? scale(2.6)
-    : scale(1.2);
+  const pipeSpeed = started ? scale(2.6) : scale(1.2);
 
   baseX += pipeSpeed;
 
@@ -442,19 +391,11 @@ function update(dt) {
 
     bird.y += bird.vy;
 
-    bird.r = Math.max(
-      -0.55,
-      Math.min(
-        1.1,
-        bird.vy / scale(10),
-      ),
-    );
+    bird.r = Math.max(-0.55, Math.min(1.1, bird.vy / scale(10)));
   } else {
     bird.frameT += dt;
 
-    bird.y +=
-      Math.sin(bird.frameT / 250) *
-      scale(0.12);
+    bird.y += Math.sin(bird.frameT / 250) * scale(0.12);
   }
 
   // Animate
@@ -463,8 +404,7 @@ function update(dt) {
   if (bird.frameT > 120) {
     bird.frameT = 0;
 
-    bird.frame =
-      (bird.frame + 1) % 3;
+    bird.frame = (bird.frame + 1) % 3;
   }
 
   // Pipes
@@ -473,45 +413,31 @@ function update(dt) {
       p.x -= pipeSpeed;
     }
 
-    const lastPipe =
-      pipes[pipes.length - 1];
+    const lastPipe = pipes[pipes.length - 1];
 
-    if (
-      lastPipe &&
-      lastPipe.x <
-        canvas.width - scale(240)
-    ) {
+    if (lastPipe && lastPipe.x < canvas.width - scale(240)) {
       spawnPipe();
     }
 
-    pipes = pipes.filter(
-      (p) => p.x + p.w > -scale(40),
-    );
+    pipes = pipes.filter((p) => p.x + p.w > -scale(40));
 
     // Score
     for (const p of pipes) {
-      if (
-        !p.passed &&
-        p.x + p.w < bird.x
-      ) {
+      if (!p.passed && p.x + p.w < bird.x) {
         p.passed = true;
 
         score++;
 
-        scoreText.textContent =
-          String(score);
+        scoreText.textContent = String(score);
       }
     }
   }
 
   // Bounds
-  const groundY =
-    canvas.height - scale(110);
+  const groundY = canvas.height - scale(110);
 
   // Boden
-  if (
-    bird.y + scale(24) >= groundY
-  ) {
+  if (bird.y + scale(24) >= groundY) {
     bird.y = groundY - scale(24);
 
     if (started) {
@@ -546,21 +472,10 @@ function update(dt) {
         x: p.x,
         y: p.topH + p.gap,
         w: p.w,
-        h:
-          groundY -
-          (p.topH + p.gap),
+        h: groundY - (p.topH + p.gap),
       };
 
-      if (
-        rectsOverlap(
-          birdBox,
-          topBox,
-        ) ||
-        rectsOverlap(
-          birdBox,
-          bottomBox,
-        )
-      ) {
+      if (rectsOverlap(birdBox, topBox) || rectsOverlap(birdBox, bottomBox)) {
         endGame();
         break;
       }
@@ -574,12 +489,7 @@ function update(dt) {
 
 function render() {
   // BG
-  drawTiled(
-    IMG.bg,
-    0,
-    canvas.height,
-    baseX * 0.2,
-  );
+  drawTiled(IMG.bg, 0, canvas.height, baseX * 0.2);
 
   // Pipes
   for (const p of pipes) {
@@ -587,47 +497,26 @@ function render() {
   }
 
   // Base
-  const groundY =
-    canvas.height - scale(110);
+  const groundY = canvas.height - scale(110);
 
-  drawTiled(
-    IMG.base,
-    groundY,
-    scale(110),
-    baseX,
-  );
+  drawTiled(IMG.base, groundY, scale(110), baseX);
 
   // Bird
-  const frames = [
-    IMG.bUp,
-    IMG.bMid,
-    IMG.bDown,
-  ];
+  const frames = [IMG.bUp, IMG.bMid, IMG.bDown];
 
-  const bImg =
-    frames[bird.frame];
+  const bImg = frames[bird.frame];
 
   ctx.save();
 
-  ctx.translate(
-    bird.x,
-    bird.y,
-  );
+  ctx.translate(bird.x, bird.y);
 
   ctx.rotate(bird.r);
 
   const bw = scale(42);
 
-  const bh =
-    (bImg.height / bImg.width) * bw;
+  const bh = (bImg.height / bImg.width) * bw;
 
-  ctx.drawImage(
-    bImg,
-    -bw / 2,
-    -bh / 2,
-    bw,
-    bh,
-  );
+  ctx.drawImage(bImg, -bw / 2, -bh / 2, bw, bh);
 
   ctx.restore();
 
@@ -635,9 +524,7 @@ function render() {
   if (!started && !gameOver) {
     const mw = scale(240);
 
-    const mh =
-      (IMG.msg.height / IMG.msg.width) *
-      mw;
+    const mh = (IMG.msg.height / IMG.msg.width) * mw;
 
     ctx.drawImage(
       IMG.msg,
@@ -649,20 +536,13 @@ function render() {
   }
 
   // Score
-  drawNumber(
-    score,
-    canvas.width / 2,
-    scale(18),
-    scale(34),
-  );
+  drawNumber(score, canvas.width / 2, scale(18), scale(34));
 
   // Game Over
   if (gameOver) {
     const ow = scale(240);
 
-    const oh =
-      (IMG.over.height / IMG.over.width) *
-      ow;
+    const oh = (IMG.over.height / IMG.over.width) * ow;
 
     ctx.drawImage(
       IMG.over,
@@ -679,8 +559,7 @@ function render() {
       Math.floor(scale(14)),
     )}px Inter, system-ui, sans-serif`;
 
-    ctx.fillStyle =
-      "rgba(255,255,255,0.9)";
+    ctx.fillStyle = "rgba(255,255,255,0.9)";
 
     ctx.textAlign = "center";
 
@@ -705,12 +584,7 @@ function loop(now) {
 
   update(dt);
 
-  ctx.clearRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height,
-  );
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   render();
 
@@ -721,80 +595,51 @@ function loop(now) {
 // Input
 // ===============================
 
-window.addEventListener(
-  "keydown",
-  (e) => {
-    if (e.code === "Space") {
-      e.preventDefault();
+window.addEventListener("keydown", (e) => {
+  if (e.code === "Space") {
+    e.preventDefault();
 
-      flap();
-    }
-  },
-);
+    flap();
+  }
+});
 
-canvas.addEventListener(
-  "pointerdown",
-  () => flap(),
-);
+canvas.addEventListener("pointerdown", () => flap());
 
-restartBtn.addEventListener(
-  "click",
-  () => resetGame(),
-);
+restartBtn.addEventListener("click", () => resetGame());
 
 // ===============================
 // Modal Events
 // ===============================
 
-saveScoreBtn?.addEventListener(
-  "click",
-  async () => {
-    const name = sanitizeName(
-      winnerNameInput.value,
-    );
+saveScoreBtn?.addEventListener("click", async () => {
+  const name = sanitizeName(winnerNameInput.value);
 
-    if (!name) {
-      headline.textContent =
-        "Bitte gültigen Namen eingeben.";
+  if (!name) {
+    headline.textContent = "Bitte gültigen Namen eingeben.";
 
-      return;
-    }
+    return;
+  }
 
-    localStorage.setItem(
-      STORAGE_WINNER,
-      name,
-    );
+  localStorage.setItem(STORAGE_WINNER, name);
 
-    const ok = await submitScore(
-      name,
-      score,
-    );
+  const ok = await submitScore(name, finalScore);
 
-    if (ok) {
-      headline.textContent =
-        "Highscore gespeichert ✅";
+  if (ok) {
+    headline.textContent = "Highscore gespeichert ✅";
 
-      closeSaveModal();
-    } else {
-      headline.textContent =
-        "Fehler beim Speichern 😕";
-    }
-  },
-);
+    closeSaveModal();
+  } else {
+    headline.textContent = "Fehler beim Speichern 😕";
+  }
+});
 
-skipSaveBtn?.addEventListener(
-  "click",
-  () => closeSaveModal(),
-);
+skipSaveBtn?.addEventListener("click", () => closeSaveModal());
 
-saveScoreModal?.addEventListener(
-  "click",
-  (e) => {
-    if (e.target === saveScoreModal) {
-      closeSaveModal();
-    }
-  },
-);
+saveScoreModal?.addEventListener("click", (e) => {
+  if (e.target === saveScoreModal) {
+    closeSaveModal();
+  }
+});
 
 // ===============================
 // Start
@@ -802,13 +647,11 @@ saveScoreModal?.addEventListener(
 
 (async function init() {
   try {
-    statusText.textContent =
-      "Loading…";
+    statusText.textContent = "Loading…";
 
     await loadAssets();
 
-    statusText.textContent =
-      "Ready";
+    statusText.textContent = "Ready";
 
     resetGame();
 
@@ -816,10 +659,8 @@ saveScoreModal?.addEventListener(
   } catch (e) {
     console.error(e);
 
-    statusText.textContent =
-      "Assets fehlen ❌";
+    statusText.textContent = "Assets fehlen ❌";
 
-    headline.textContent =
-      "Fehler: Assets nicht gefunden";
+    headline.textContent = "Fehler: Assets nicht gefunden";
   }
 })();
