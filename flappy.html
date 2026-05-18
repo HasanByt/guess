@@ -31,19 +31,14 @@
 
         <div class="header-actions">
           <a href="index.html" style="text-decoration: none">
-            <button
-              type="button"
-              class="secondary"
-            >
-              ← Startseite
-            </button>
+            <button type="button" class="secondary">← Startseite</button>
           </a>
 
-          <button
-            id="restartBtn"
-            type="button"
-            class="secondary"
-          >
+          <button id="openLeaderboardBtn" type="button" class="secondary">
+            🏆 Highscores
+          </button>
+
+          <button id="restartBtn" type="button" class="secondary">
             Neustart
           </button>
         </div>
@@ -56,8 +51,12 @@
             <h1 id="headline">🐦 Flappy Bird</h1>
 
             <div class="meta">
-              <span class="pill">
+              <span class="pill" id="bestInfo">
                 <span class="spark"></span>
+                Global: —
+              </span>
+
+              <span class="pill">
                 Score:
                 <span id="scoreText">0</span>
               </span>
@@ -112,11 +111,9 @@
             <h3>Spiel-Regeln</h3>
 
             <p class="hint">
-              Flieg durch die Lücken der Rohre.
-              Jede geschaffte Lücke gibt
+              Flieg durch die Lücken der Rohre. Jede geschaffte Lücke gibt
               <strong>+1</strong>
-              Punkt.
-              Crash = Game Over.
+              Punkt. Crash = Game Over.
             </p>
 
             <div class="range">
@@ -129,19 +126,31 @@
             <h3>Pro-Tipp</h3>
 
             <p class="hint">
-              Kurze Taps statt dauernd spammen.
-              Ziel: gleichmässige Höhe halten.
+              Kurze Taps statt dauernd spammen. Ziel: gleichmässige Höhe halten.
             </p>
           </div>
         </aside>
       </div>
     </div>
 
+    <!-- LEADERBOARD MODAL -->
+    <div class="modal-backdrop" id="leaderboardModal">
+      <div class="modal">
+        <h2>🏆 Top 10 (Flappy)</h2>
+
+        <div class="top3" id="top3"></div>
+        <ol id="leaderboard" start="4"></ol>
+
+        <div class="btnrow">
+          <button id="closeLeaderboardBtn" type="button" class="secondary">
+            Schliessen
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- SAVE SCORE MODAL -->
-    <div
-      class="modal-backdrop"
-      id="saveScoreModal"
-    >
+    <div class="modal-backdrop" id="saveScoreModal">
       <div class="modal">
         <div class="headline">
           <h2>🏆 Highscore speichern</h2>
@@ -162,10 +171,7 @@
         </div>
 
         <div class="btnrow">
-          <button
-            id="skipSaveBtn"
-            class="secondary"
-          >
+          <button id="skipSaveBtn" class="secondary">
             Überspringen
           </button>
 
