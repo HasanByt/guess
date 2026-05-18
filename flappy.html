@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flappy Bird • Gaming MAIT's</title>
 
-    <!-- Fonts -->
+    <!-- Modern Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,11 +18,9 @@
 
   <body>
     <div class="app">
-      <!-- HEADER -->
       <header>
         <div class="brand">
           <div class="logo">🐦</div>
-
           <div>
             <p class="title">Gaming MAIT's</p>
             <p class="subtitle">Flappy Mode</p>
@@ -38,37 +36,29 @@
             🏆 Highscores
           </button>
 
-          <button id="restartBtn" type="button" class="secondary">
-            Neustart
+          <button id="openHelpBtn" type="button" class="secondary">
+            ❔ Regeln
           </button>
         </div>
       </header>
 
       <div class="grid">
-        <!-- MAIN -->
+        <!-- MAIN GAME -->
         <section class="card">
           <div class="headline">
             <h1 id="headline">🐦 Flappy Bird</h1>
 
             <div class="meta">
               <span class="pill" id="bestInfo">
-                <span class="spark"></span>
-                Global: —
+                <span class="spark"></span> Global: —
               </span>
 
               <span class="pill">
-                Score:
-                <span id="scoreText">0</span>
+                Score: <span id="scoreText">0</span>
               </span>
 
               <span class="pill">
-                Best:
-                <span id="bestText">0</span>
-              </span>
-
-              <span class="pill">
-                Status:
-                <span id="statusText">Ready</span>
+                Best: <span id="bestText">0</span>
               </span>
             </div>
           </div>
@@ -98,24 +88,24 @@
           </div>
 
           <p class="hint" style="margin-top: 10px">
-            Steuerung:
-            <strong>Space</strong> /
-            Klick /
-            Tap = Flap.
+            Steuerung: <strong>Space</strong> / Klick / Tap = Flap.
           </p>
+
+          <div class="btnrow" style="justify-content: flex-start">
+            <button id="restartBtn" type="button" class="secondary">
+              Neustart
+            </button>
+          </div>
         </section>
 
         <!-- SIDE -->
         <aside class="card side">
           <div>
             <h3>Spiel-Regeln</h3>
-
             <p class="hint">
               Flieg durch die Lücken der Rohre. Jede geschaffte Lücke gibt
-              <strong>+1</strong>
-              Punkt. Crash = Game Over.
+              <strong>+1</strong> Punkt. Crash = Game Over.
             </p>
-
             <div class="range">
               <span>Punkte</span>
               <strong>+1 pro Rohr</strong>
@@ -123,8 +113,14 @@
           </div>
 
           <div>
-            <h3>Pro-Tipp</h3>
+            <h3>Mobile Steuerung</h3>
+            <p class="hint">
+              Tippe auf das Spielfeld, um den Vogel nach oben fliegen zu lassen.
+            </p>
+          </div>
 
+          <div>
+            <h3>Pro-Tipp</h3>
             <p class="hint">
               Kurze Taps statt dauernd spammen. Ziel: gleichmässige Höhe halten.
             </p>
@@ -133,11 +129,28 @@
       </div>
     </div>
 
-    <!-- LEADERBOARD MODAL -->
+    <!-- ===== HELP MODAL ===== -->
+    <div class="modal-backdrop" id="helpModal">
+      <div class="modal">
+        <h2>❔ Regeln</h2>
+        <p class="hint">
+          Desktop: Space drücken. Mobile: auf das Spielfeld tippen. Flieg durch
+          die Rohre, ohne den Boden oder ein Rohr zu berühren. Jede geschaffte
+          Lücke gibt einen Punkt. Je höher dein Score, desto besser.
+        </p>
+
+        <div class="btnrow">
+          <button id="closeHelpBtn" type="button" class="secondary">
+            Schliessen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LEADERBOARD MODAL ===== -->
     <div class="modal-backdrop" id="leaderboardModal">
       <div class="modal">
-        <h2>🏆 Top 10 (Flappy)</h2>
-
+        <h2>🏆 Top 10</h2>
         <div class="top3" id="top3"></div>
         <ol id="leaderboard" start="4"></ol>
 
@@ -149,39 +162,36 @@
       </div>
     </div>
 
-    <!-- SAVE SCORE MODAL -->
+    <!-- ===== SAVE SCORE MODAL ===== -->
     <div class="modal-backdrop" id="saveScoreModal">
       <div class="modal">
-        <div class="headline">
-          <h2>🏆 Highscore speichern</h2>
-
-          <p class="hint">
-            Dein Score:
-            <strong id="finalScoreText">0</strong>
-          </p>
-        </div>
+        <h2>💀 Game Over!</h2>
 
         <div class="row">
-          <input
-            id="winnerName"
-            type="text"
-            maxlength="20"
-            placeholder="Dein Name"
-          />
+          <div id="winText" style="font-weight: 700"></div>
+
+          <label>
+            Dein Name:
+            <input
+              id="winnerName"
+              type="text"
+              placeholder="Name"
+              maxlength="20"
+              autocomplete="nickname"
+            />
+          </label>
         </div>
 
         <div class="btnrow">
-          <button id="skipSaveBtn" class="secondary">
-            Überspringen
+          <button id="skipSaveBtn" type="button" class="secondary">
+            Nicht speichern
           </button>
-
-          <button id="saveScoreBtn">
-            Speichern
-          </button>
+          <button id="saveScoreBtn" type="button">Highscore speichern</button>
         </div>
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
     <script src="flappy.js"></script>
   </body>
 </html>

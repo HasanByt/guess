@@ -1,6 +1,7 @@
 // ===============================
 // Flappy Bird (Canvas) – mit echten Assets
-// Online Highscore + Leaderboard
+// Online Leaderboard (Netlify/Upstash)
+// Design & UX wie snake.js / guess.js / hangman.js
 // OHNE Sounds
 // ===============================
 
@@ -9,51 +10,46 @@ const ASSET_BASE = "./public/flappy/";
 const API_GET = "/.netlify/functions/flappy-get-scores";
 const API_POST = "/.netlify/functions/flappy-submit-score";
 
-// DOM
+let jsConfetti = null;
+
+// ===== DOM =====
+const headline = document.getElementById("headline");
+const bestInfo = document.getElementById("bestInfo");
+const scoreText = document.getElementById("scoreText");
+const bestText = document.getElementById("bestText");
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const scoreText = document.getElementById("scoreText");
-const bestText = document.getElementById("bestText");
-const statusText = document.getElementById("statusText");
 const restartBtn = document.getElementById("restartBtn");
-const headline = document.getElementById("headline");
-const bestInfo = document.getElementById("bestInfo");
 
-// Leaderboard Modal
+// Help modal
+const openHelpBtn = document.getElementById("openHelpBtn");
+const helpModal = document.getElementById("helpModal");
+const closeHelpBtn = document.getElementById("closeHelpBtn");
+
+// Leaderboard modal
 const openLeaderboardBtn = document.getElementById("openLeaderboardBtn");
-const closeLeaderboardBtn = document.getElementById("closeLeaderboardBtn");
 const leaderboardModal = document.getElementById("leaderboardModal");
+const closeLeaderboardBtn = document.getElementById("closeLeaderboardBtn");
 const leaderboardEl = document.getElementById("leaderboard");
 const top3El = document.getElementById("top3");
 
-// Save Score Modal
+// Save modal
 const saveScoreModal = document.getElementById("saveScoreModal");
-const finalScoreText = document.getElementById("finalScoreText");
+const winText = document.getElementById("winText");
 const winnerNameInput = document.getElementById("winnerName");
-const saveScoreBtn = document.getElementById("saveScoreBtn");
 const skipSaveBtn = document.getElementById("skipSaveBtn");
+const saveScoreBtn = document.getElementById("saveScoreBtn");
 
+// Name merken
 const STORAGE_WINNER = "flappy_winnerName";
+winnerNameInput.value = localStorage.getItem(STORAGE_WINNER) || "";
 
-if (winnerNameInput) {
-  winnerNameInput.value = localStorage.getItem(STORAGE_WINNER) || "";
-}
+// Local best
+const STORAGE_BEST = "flappy_best";
 
-// Responsive Canvas
-function resizeCanvas() {
-  const maxW = 520;
-  const parentW = canvas.parentElement.clientWidth;
-  const w = Math.min(maxW, parentW);
-
-  canvas.width = Math.floor(w);
-  canvas.height = Math.floor(w * 1.25);
-}
-
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
-
-// Assets
+// ===== Assets =====
 const IMG = {};
 
 function loadImage(key, src) {
@@ -89,18 +85,25 @@ async function loadAssets() {
   await Promise.all(jobs);
 }
 
+// ===== Canvas sizing =====
+function resizeCanvas() {
+  const maxW = 520;
+  const parentW = canvas.parentElement.clientWidth;
+  const w = Math.min(maxW, parentW);
+
+  canvas.width = Math.floor(w);
+  canvas.height = Math.floor(w * 1.25);
+}
+
 function scale(v) {
   return (v * canvas.width) / 520;
 }
 
-// State
+// ===== Game State =====
 let started = false;
 let gameOver = false;
 let score = 0;
-let finalScore = 0;
-let best = Number(localStorage.getItem("flappy_best") || "0");
-
-bestText.textContent = String(best);
+let best = Number(localStorage.getItem(STORAGE_BEST) || "0") || 0;
 
 const bird = {
   x: 0,
@@ -113,15 +116,27 @@ const bird = {
 
 let pipes = [];
 let baseX = 0;
+let last = performance.now();
+let rafId = null;
 
+// ===== Init =====
+resizeCanvas();
+window.addEventListener("resize", () => {
+  resizeCanvas();
+  resetGame();
+});
+
+bestText.textContent = String(best);
+
+// ===============================
+// Game functions
+// ===============================
 function resetGame() {
   started = false;
   gameOver = false;
   score = 0;
-  finalScore = 0;
 
   scoreText.textContent = "0";
-  statusText.textContent = "Ready";
   headline.textContent = "🐦 Flappy Bird";
 
   bird.x = scale(120);
@@ -158,18 +173,13 @@ function spawnPipe(extraX = 0) {
 
 function flap() {
   if (gameOver) {
-    const modalOpen = saveScoreModal?.classList.contains("show");
-
-    if (!modalOpen) {
-      resetGame();
-    }
-
+    const modalOpen = saveScoreModal.classList.contains("show");
+    if (!modalOpen) resetGame();
     return;
   }
 
   if (!started) {
     started = true;
-    statusText.textContent = "Go!";
     headline.textContent = "Let’s go! 🐦";
   }
 
@@ -189,57 +199,48 @@ function endGame() {
   if (gameOver) return;
 
   gameOver = true;
-
-  finalScore = score;
-
-  statusText.textContent = "Game Over";
   headline.textContent = "💀 Game Over!";
 
-  if (finalScore > best) {
-    best = finalScore;
-    localStorage.setItem("flappy_best", String(best));
+  if (score > best) {
+    best = score;
+    localStorage.setItem(STORAGE_BEST, String(best));
     bestText.textContent = String(best);
+  }
+
+  if (typeof JSConfetti !== "undefined") {
+    if (!jsConfetti) jsConfetti = new JSConfetti();
+    if (score >= 5) jsConfetti.addConfetti();
   }
 
   openSaveModal();
 }
 
 // ===============================
-// Save Modal
+// Modals
 // ===============================
+function openModal(el) {
+  el.classList.add("show");
+}
+
+function closeModal(el) {
+  el.classList.remove("show");
+}
 
 function openSaveModal() {
-  if (!saveScoreModal) return;
-
-  if (finalScoreText) {
-    finalScoreText.textContent = String(finalScore);
-  }
-
-  winnerNameInput.value = localStorage.getItem(STORAGE_WINNER) || "";
-  saveScoreModal.classList.add("show");
-
+  winText.textContent = `Score: ${score}. Willst du speichern?`;
+  openModal(saveScoreModal);
   setTimeout(() => winnerNameInput.focus(), 0);
 }
 
-function closeSaveModal() {
-  saveScoreModal.classList.remove("show");
-}
-
 // ===============================
-// API
+// Highscore API
 // ===============================
-
 async function submitScore(name, scoreValue) {
   try {
     const res = await fetch(API_POST, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        score: scoreValue,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, score: scoreValue }),
     });
 
     if (!res.ok) {
@@ -265,7 +266,7 @@ async function loadLeaderboard() {
     renderLeaderboard(rows);
 
     const globalBest = rows?.[0]
-      ? `Global: ${rows[0].name} (${rows[0].score} Pipes)`
+      ? `Global: ${rows[0].name} (${rows[0].score})`
       : "Global: —";
 
     bestInfo.textContent = globalBest;
@@ -280,13 +281,11 @@ function renderLeaderboard(rows) {
   const myName = (localStorage.getItem(STORAGE_WINNER) || "").trim();
 
   top3El.innerHTML = "";
-
   const medals = ["🥇", "🥈", "🥉"];
   const top3 = (rows || []).slice(0, 3);
 
   for (let i = 0; i < 3; i++) {
     const entry = top3[i];
-
     const card = document.createElement("div");
     card.className = "podium";
 
@@ -313,7 +312,6 @@ function renderLeaderboard(rows) {
   }
 
   const rest = rows.slice(3);
-
   if (rest.length === 0) {
     const li = document.createElement("li");
     li.textContent = "—";
@@ -333,37 +331,23 @@ function renderLeaderboard(rows) {
   }
 }
 
-function sanitizeName(name) {
-  if (typeof name !== "string") return null;
-
-  const clean = name.trim();
-
-  if (clean.length < 2 || clean.length > 20) return null;
-  if (!/^[a-zA-Z0-9 äöüÄÖÜß._-]+$/.test(clean)) return null;
-
-  return clean;
-}
-
 // ===============================
-// Draw Helpers
+// Render
 // ===============================
-
 function drawTiled(img, y, h, xOffset) {
   const scaleY = h / img.height;
-  const drawH = h;
   const drawW = img.width * scaleY;
 
   let x = -((xOffset % drawW) + drawW);
 
   while (x < canvas.width + drawW) {
-    ctx.drawImage(img, x, y, drawW, drawH);
+    ctx.drawImage(img, x, y, drawW, h);
     x += drawW;
   }
 }
 
 function drawPipe(pipe) {
   const pipeImg = IMG.pipe;
-
   const bottomY = pipe.topH + pipe.gap;
   const bottomH = canvas.height - scale(110) - bottomY;
 
@@ -400,96 +384,9 @@ function drawNumber(n, x, y, size) {
   }
 }
 
-// ===============================
-// Loop
-// ===============================
+function renderFrame() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-let last = performance.now();
-
-function update(dt) {
-  const pipeSpeed = started ? scale(2.6) : scale(1.2);
-  baseX += pipeSpeed;
-
-  if (started && !gameOver) {
-    bird.vy += scale(0.38);
-    bird.y += bird.vy;
-    bird.r = Math.max(-0.55, Math.min(1.1, bird.vy / scale(10)));
-  } else {
-    bird.frameT += dt;
-    bird.y += Math.sin(bird.frameT / 250) * scale(0.12);
-  }
-
-  bird.frameT += dt;
-
-  if (bird.frameT > 120) {
-    bird.frameT = 0;
-    bird.frame = (bird.frame + 1) % 3;
-  }
-
-  if (started && !gameOver) {
-    for (const p of pipes) p.x -= pipeSpeed;
-
-    const lastPipe = pipes[pipes.length - 1];
-
-    if (lastPipe && lastPipe.x < canvas.width - scale(240)) {
-      spawnPipe();
-    }
-
-    pipes = pipes.filter((p) => p.x + p.w > -scale(40));
-
-    for (const p of pipes) {
-      if (!p.passed && p.x + p.w < bird.x) {
-        p.passed = true;
-        score++;
-        scoreText.textContent = String(score);
-      }
-    }
-  }
-
-  const groundY = canvas.height - scale(110);
-
-  if (bird.y + scale(24) >= groundY) {
-    bird.y = groundY - scale(24);
-    if (started) endGame();
-  }
-
-  if (bird.y < 0) {
-    bird.y = 0;
-    bird.vy = 0;
-  }
-
-  if (started && !gameOver) {
-    const birdBox = {
-      x: bird.x - scale(18),
-      y: bird.y - scale(14),
-      w: scale(34),
-      h: scale(28),
-    };
-
-    for (const p of pipes) {
-      const topBox = {
-        x: p.x,
-        y: 0,
-        w: p.w,
-        h: p.topH,
-      };
-
-      const bottomBox = {
-        x: p.x,
-        y: p.topH + p.gap,
-        w: p.w,
-        h: groundY - (p.topH + p.gap),
-      };
-
-      if (rectsOverlap(birdBox, topBox) || rectsOverlap(birdBox, bottomBox)) {
-        endGame();
-        break;
-      }
-    }
-  }
-}
-
-function render() {
   drawTiled(IMG.bg, 0, canvas.height, baseX * 0.2);
 
   for (const p of pipes) drawPipe(p);
@@ -546,21 +443,105 @@ function render() {
   }
 }
 
+function update(dt) {
+  const pipeSpeed = started ? scale(2.6) : scale(1.2);
+  baseX += pipeSpeed;
+
+  if (started && !gameOver) {
+    bird.vy += scale(0.38);
+    bird.y += bird.vy;
+    bird.r = Math.max(-0.55, Math.min(1.1, bird.vy / scale(10)));
+  } else {
+    bird.frameT += dt;
+    bird.y += Math.sin(bird.frameT / 250) * scale(0.12);
+  }
+
+  bird.frameT += dt;
+  if (bird.frameT > 120) {
+    bird.frameT = 0;
+    bird.frame = (bird.frame + 1) % 3;
+  }
+
+  if (started && !gameOver) {
+    for (const p of pipes) p.x -= pipeSpeed;
+
+    const lastPipe = pipes[pipes.length - 1];
+    if (lastPipe && lastPipe.x < canvas.width - scale(240)) {
+      spawnPipe();
+    }
+
+    pipes = pipes.filter((p) => p.x + p.w > -scale(40));
+
+    for (const p of pipes) {
+      if (!p.passed && p.x + p.w < bird.x) {
+        p.passed = true;
+        score++;
+        scoreText.textContent = String(score);
+      }
+    }
+  }
+
+  const groundY = canvas.height - scale(110);
+
+  if (bird.y + scale(24) >= groundY) {
+    bird.y = groundY - scale(24);
+    if (started) endGame();
+  }
+
+  if (bird.y < 0) {
+    bird.y = 0;
+    bird.vy = 0;
+  }
+
+  if (started && !gameOver) {
+    const birdBox = {
+      x: bird.x - scale(18),
+      y: bird.y - scale(14),
+      w: scale(34),
+      h: scale(28),
+    };
+
+    for (const p of pipes) {
+      const topBox = { x: p.x, y: 0, w: p.w, h: p.topH };
+      const bottomBox = {
+        x: p.x,
+        y: p.topH + p.gap,
+        w: p.w,
+        h: groundY - (p.topH + p.gap),
+      };
+
+      if (rectsOverlap(birdBox, topBox) || rectsOverlap(birdBox, bottomBox)) {
+        endGame();
+        break;
+      }
+    }
+  }
+}
+
 function loop(now) {
   const dt = now - last;
   last = now;
 
   update(dt);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  render();
+  renderFrame();
 
-  requestAnimationFrame(loop);
+  rafId = requestAnimationFrame(loop);
+}
+
+// ===============================
+// Helpers
+// ===============================
+function sanitizeName(name) {
+  if (typeof name !== "string") return null;
+  const clean = name.trim();
+  if (clean.length < 2 || clean.length > 20) return null;
+  if (!/^[a-zA-Z0-9 äöüÄÖÜß._-]+$/.test(clean)) return null;
+  return clean;
 }
 
 // ===============================
 // Events
 // ===============================
-
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
     e.preventDefault();
@@ -571,73 +552,62 @@ window.addEventListener("keydown", (e) => {
 canvas.addEventListener("pointerdown", () => flap());
 
 restartBtn.addEventListener("click", () => {
-  closeSaveModal();
+  closeModal(saveScoreModal);
   resetGame();
 });
 
+// Help modal
+openHelpBtn.addEventListener("click", () => openModal(helpModal));
+closeHelpBtn.addEventListener("click", () => closeModal(helpModal));
+helpModal.addEventListener("click", (e) => {
+  if (e.target === helpModal) closeModal(helpModal);
+});
+
+// Leaderboard modal
 openLeaderboardBtn.addEventListener("click", async () => {
-  leaderboardModal.classList.add("show");
+  openModal(leaderboardModal);
   await loadLeaderboard();
 });
-
-closeLeaderboardBtn.addEventListener("click", () => {
-  leaderboardModal.classList.remove("show");
+closeLeaderboardBtn.addEventListener("click", () => closeModal(leaderboardModal));
+leaderboardModal.addEventListener("click", (e) => {
+  if (e.target === leaderboardModal) closeModal(leaderboardModal);
 });
 
-leaderboardModal.addEventListener("click", (e) => {
-  if (e.target === leaderboardModal) {
-    leaderboardModal.classList.remove("show");
-  }
+// Save modal
+skipSaveBtn.addEventListener("click", () => closeModal(saveScoreModal));
+saveScoreModal.addEventListener("click", (e) => {
+  if (e.target === saveScoreModal) closeModal(saveScoreModal);
 });
 
 saveScoreBtn.addEventListener("click", async () => {
   const name = sanitizeName(winnerNameInput.value);
-
   if (!name) {
-    headline.textContent = "Bitte gültigen Namen eingeben.";
+    headline.textContent = "Bitte einen gültigen Namen eingeben (2-20 Zeichen).";
     winnerNameInput.focus();
     return;
   }
 
   localStorage.setItem(STORAGE_WINNER, name);
 
-  const ok = await submitScore(name, finalScore);
-
+  const ok = await submitScore(name, score);
   if (ok) {
-    closeSaveModal();
+    closeModal(saveScoreModal);
     await loadLeaderboard();
-  }
-});
-
-skipSaveBtn.addEventListener("click", () => {
-  closeSaveModal();
-});
-
-saveScoreModal.addEventListener("click", (e) => {
-  if (e.target === saveScoreModal) {
-    closeSaveModal();
   }
 });
 
 // ===============================
 // Start
 // ===============================
-
 (async function init() {
   try {
-    statusText.textContent = "Loading…";
-
     await loadAssets();
-
-    statusText.textContent = "Ready";
-
-    resetGame();
     await loadLeaderboard();
+    resetGame();
 
-    requestAnimationFrame(loop);
+    rafId = requestAnimationFrame(loop);
   } catch (e) {
     console.error(e);
-    statusText.textContent = "Assets fehlen ❌";
     headline.textContent = "Fehler: Assets nicht gefunden";
   }
 })();
