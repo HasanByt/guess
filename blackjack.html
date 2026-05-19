@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
@@ -50,12 +50,19 @@
               <span class="pill" id="bestInfo">
                 <span class="spark"></span> Global: —
               </span>
-              <span class="pill">Guthaben: <span id="balanceText">1000</span> CHF</span>
-              <span class="pill">Best: <span id="bestBalanceText">1000</span> CHF</span>
+              <span class="pill">
+                Guthaben: <span id="balanceText">1000</span> CHF
+              </span>
+              <span class="pill">
+                Best: <span id="bestBalanceText">1000</span> CHF
+              </span>
             </div>
           </div>
 
-          <div class="card" style="background: var(--card-strong); margin-bottom: 14px">
+          <div
+            class="card"
+            style="background: var(--card-strong); margin-bottom: 14px"
+          >
             <h3>Dealer</h3>
             <p class="hint">Wert: <span id="dealerValueText">—</span></p>
             <div id="dealerCards" class="blackjack-cards"></div>
@@ -79,16 +86,34 @@
               />
               <button id="dealBtn" type="button">Deal</button>
             </div>
+            <div class="chip-row">
+              <button type="button" class="chip-btn" data-chip="10">10</button>
+              <button type="button" class="chip-btn" data-chip="50">50</button>
+              <button type="button" class="chip-btn" data-chip="100">
+                100
+              </button>
+              <button type="button" class="chip-btn" data-chip="500">
+                500
+              </button>
+            </div>
 
-            <p class="hint" id="statusText" style="margin-top: 10px">
+            <p class="hint blackjack-status" id="statusText" style="margin-top: 10px">
               Status: Einsatz wählen und Deal drücken.
             </p>
 
             <div class="btnrow" style="justify-content: flex-start">
               <button id="hitBtn" type="button" class="secondary">Hit</button>
-              <button id="standBtn" type="button" class="secondary">Stand</button>
+              <button id="standBtn" type="button" class="secondary">
+                Stand
+              </button>
+              <button id="doubleBtn" type="button" class="secondary">
+                Double Down
+              </button>
               <button id="restartBtn" type="button" class="secondary">
                 Neustart
+              </button>
+              <button id="cashoutBtn" type="button" class="secondary">
+                Spiel beenden
               </button>
             </div>
           </div>
@@ -99,7 +124,8 @@
             <h3>Spiel-Regeln</h3>
             <p class="hint">
               Starte mit <strong>1000 CHF</strong>. Ziel ist es, näher an
-              <strong>21</strong> zu kommen als der Dealer, ohne darüber zu gehen.
+              <strong>21</strong> zu kommen als der Dealer, ohne darüber zu
+              gehen.
             </p>
             <div class="range">
               <span>Startguthaben</span>
@@ -110,8 +136,8 @@
           <div>
             <h3>Highscore</h3>
             <p class="hint">
-              Gespeichert wird dein <strong>höchstes erreichtes Guthaben</strong>,
-              nicht nur dein Endstand.
+              Gespeichert wird dein
+              <strong>höchstes erreichtes Guthaben</strong>.
             </p>
           </div>
         </aside>
@@ -123,9 +149,9 @@
       <div class="modal">
         <h2>❔ Regeln</h2>
         <p class="hint">
-          Du startest mit 1000 CHF. Wähle einen Einsatz und drücke Deal.
-          Mit Hit ziehst du eine weitere Karte. Mit Stand ist der Dealer dran.
-          Wenn du über 21 kommst, verlierst du den Einsatz. Blackjack zahlt 1.5x.
+          Du startest mit 1000 CHF. Wähle einen Einsatz und drücke Deal. Mit Hit
+          ziehst du eine weitere Karte. Mit Stand ist der Dealer dran. Wenn du
+          über 21 kommst, verlierst du den Einsatz. Blackjack zahlt 1.5x.
         </p>
 
         <div class="btnrow">
@@ -139,7 +165,7 @@
     <!-- LEADERBOARD MODAL -->
     <div class="modal-backdrop" id="leaderboardModal">
       <div class="modal">
-        <h2>🏆 Top 10 (Blackjack)</h2>
+        <h2>🏆 Top 10</h2>
         <div class="top3" id="top3"></div>
         <ol id="leaderboard" start="4"></ol>
 

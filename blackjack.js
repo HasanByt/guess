@@ -1,6 +1,7 @@
 // ===============================
-// Blackjack Game
+// Blackjack Phase 1
 // Highscore = höchstes erreichtes Guthaben
+// Design & UX wie snake.js / guess.js / hangman.js
 // ===============================
 
 const API_GET = "/.netlify/functions/blackjack-get-scores";
@@ -8,7 +9,7 @@ const API_POST = "/.netlify/functions/blackjack-submit-score";
 
 const START_BALANCE = 1000;
 
-// DOM
+// ===== DOM =====
 const headline = document.getElementById("headline");
 const bestInfo = document.getElementById("bestInfo");
 
@@ -25,30 +26,37 @@ const betInput = document.getElementById("betInput");
 const dealBtn = document.getElementById("dealBtn");
 const hitBtn = document.getElementById("hitBtn");
 const standBtn = document.getElementById("standBtn");
+const doubleBtn = document.getElementById("doubleBtn");
 const restartBtn = document.getElementById("restartBtn");
 const statusText = document.getElementById("statusText");
 
-// Modals
+const chipButtons = document.querySelectorAll(".chip-btn");
+const cashoutBtn = document.getElementById("cashoutBtn");
+
+// Help modal
 const openHelpBtn = document.getElementById("openHelpBtn");
 const helpModal = document.getElementById("helpModal");
 const closeHelpBtn = document.getElementById("closeHelpBtn");
 
+// Leaderboard modal
 const openLeaderboardBtn = document.getElementById("openLeaderboardBtn");
 const leaderboardModal = document.getElementById("leaderboardModal");
 const closeLeaderboardBtn = document.getElementById("closeLeaderboardBtn");
 const leaderboardEl = document.getElementById("leaderboard");
 const top3El = document.getElementById("top3");
 
+// Save modal
 const saveScoreModal = document.getElementById("saveScoreModal");
 const winText = document.getElementById("winText");
 const winnerNameInput = document.getElementById("winnerName");
 const skipSaveBtn = document.getElementById("skipSaveBtn");
 const saveScoreBtn = document.getElementById("saveScoreBtn");
 
+// Name merken
 const STORAGE_WINNER = "blackjack_winnerName";
 winnerNameInput.value = localStorage.getItem(STORAGE_WINNER) || "";
 
-// State
+// ===== Game State =====
 let deck = [];
 let playerCards = [];
 let dealerCards = [];
@@ -56,10 +64,12 @@ let dealerCards = [];
 let balance = START_BALANCE;
 let bestBalance = START_BALANCE;
 let currentBet = 0;
+
 let roundActive = false;
 let dealerHidden = true;
+let saveOpened = false;
 
-// Init
+// ===== Init =====
 loadLeaderboard();
 resetGame();
 
@@ -82,10 +92,12 @@ function createDeck() {
 
 function shuffle(cards) {
   const arr = [...cards];
+
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
+
   return arr;
 }
 
@@ -121,8 +133,15 @@ function isBlackjack(cards) {
   return cards.length === 2 && handValue(cards) === 21;
 }
 
+function cardValue(card) {
+  if (!card) return 0;
+  if (card.rank === "A") return 11;
+  if (["K", "Q", "J"].includes(card.rank)) return 10;
+  return Number(card.rank);
+}
+
 // ===============================
-// Game
+// Game Logic
 // ===============================
 function resetGame() {
   deck = createDeck();
@@ -132,8 +151,10 @@ function resetGame() {
   balance = START_BALANCE;
   bestBalance = START_BALANCE;
   currentBet = 0;
+
   roundActive = false;
   dealerHidden = true;
+  saveOpened = false;
 
   headline.textContent = "🃏 Blackjack";
   statusText.textContent = "Status: Einsatz wählen und Deal drücken.";
@@ -143,6 +164,8 @@ function resetGame() {
 }
 
 function startRound() {
+  if (roundActive) return;
+
   const bet = Number(betInput.value);
 
   if (!Number.isInteger(bet) || bet < 10) {
@@ -168,13 +191,11 @@ function startRound() {
   statusText.textContent = "Status: Hit oder Stand?";
 
   setActionButtons(true);
+  updateUI();
 
   if (isBlackjack(playerCards)) {
-    finishRound("blackjack");
-    return;
+    setStatus(`Status: Blackjack! +${win} CHF`, "status-win");
   }
-
-  updateUI();
 }
 
 function hit() {
@@ -183,20 +204,28 @@ function hit() {
   playerCards.push(drawCard());
 
   if (handValue(playerCards) > 21) {
-    finishRound("playerBust");
+    setStatus(`Status: Bust! -${bet} CHF`, "status-lose");
     return;
   }
 
   updateUI();
 }
 
-function stand() {
+async function stand() {
   if (!roundActive) return;
 
   dealerHidden = false;
+  updateUI();
+
+  setActionButtons(false);
+  statusText.textContent = "Status: Dealer ist dran...";
+
+  await sleep(500);
 
   while (handValue(dealerCards) < 17) {
     dealerCards.push(drawCard());
+    updateUI();
+    await sleep(650);
   }
 
   const player = handValue(playerCards);
@@ -206,6 +235,27 @@ function stand() {
   else if (player > dealer) finishRound("playerWin");
   else if (player < dealer) finishRound("dealerWin");
   else finishRound("push");
+}
+
+async function doubleDown() {
+  if (!roundActive) return;
+
+  if (balance < currentBet * 2) {
+    statusText.textContent =
+      "Status: Zu wenig Guthaben für Double Down.";
+    return;
+  }
+
+  currentBet *= 2;
+
+  playerCards.push(drawCard());
+
+  if (handValue(playerCards) > 21) {
+    finishRound("playerBust");
+    return;
+  }
+
+  await stand();
 }
 
 function finishRound(result) {
@@ -241,15 +291,26 @@ function finishRound(result) {
     headline.textContent = "Unentschieden.";
   }
 
-  if (balance > bestBalance) bestBalance = balance;
+  if (balance > bestBalance) {
+    bestBalance = balance;
+  }
 
+  currentBet = 0;
   updateUI();
 
   if (balance <= 0) {
     balance = 0;
     updateUI();
-    openSaveModal();
+    endGame();
   }
+}
+
+function endGame() {
+  if (saveOpened) return;
+  saveOpened = true;
+
+  headline.textContent = "🏁 Spiel beendet";
+  openSaveModal();
 }
 
 // ===============================
@@ -305,15 +366,10 @@ function createCardEl(card, hidden = false) {
   return div;
 }
 
-function cardValue(card) {
-  if (card.rank === "A") return 11;
-  if (["K", "Q", "J"].includes(card.rank)) return 10;
-  return Number(card.rank);
-}
-
 function setActionButtons(active) {
   hitBtn.disabled = !active;
   standBtn.disabled = !active;
+  doubleBtn.disabled = !active;
   dealBtn.disabled = active;
   betInput.disabled = active;
 }
@@ -336,7 +392,7 @@ function openSaveModal() {
 }
 
 // ===============================
-// API
+// Highscore API
 // ===============================
 async function submitScore(name, scoreValue) {
   try {
@@ -368,9 +424,11 @@ async function loadLeaderboard() {
     const rows = await res.json();
     renderLeaderboard(rows);
 
-    bestInfo.textContent = rows?.[0]
+    const globalBest = rows?.[0]
       ? `Global: ${rows[0].name} (${rows[0].score} CHF)`
       : "Global: —";
+
+    bestInfo.textContent = globalBest;
   } catch {
     bestInfo.textContent = "Global: —";
     if (leaderboardEl) leaderboardEl.innerHTML = "<li>Server nicht erreichbar 😕</li>";
@@ -413,7 +471,7 @@ function renderLeaderboard(rows) {
   }
 
   const rest = rows.slice(3);
-  if (!rest.length) {
+  if (rest.length === 0) {
     const li = document.createElement("li");
     li.textContent = "—";
     leaderboardEl.appendChild(li);
@@ -424,7 +482,10 @@ function renderLeaderboard(rows) {
     const li = document.createElement("li");
     li.textContent = `${r.name} — ${r.score} CHF`;
 
-    if (myName && r.name === myName) li.classList.add("highlight");
+    if (myName && r.name === myName) {
+      li.classList.add("highlight");
+    }
+
     leaderboardEl.appendChild(li);
   }
 }
@@ -440,20 +501,70 @@ function sanitizeName(name) {
   return clean;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function setStatus(text, type = "") {
+  statusText.textContent = text;
+
+  statusText.classList.remove(
+    "status-win",
+    "status-lose",
+    "status-push",
+    "status-info"
+  );
+
+  if (type) {
+    statusText.classList.add(type);
+  }
+}
+
 // ===============================
 // Events
 // ===============================
 dealBtn.addEventListener("click", startRound);
 hitBtn.addEventListener("click", hit);
 standBtn.addEventListener("click", stand);
+doubleBtn.addEventListener("click", doubleDown);
 restartBtn.addEventListener("click", resetGame);
 
+chipButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (roundActive) return;
+
+    const chip = Number(btn.dataset.chip);
+    const current = Number(betInput.value) || 0;
+    const next = current + chip;
+
+    if (next > balance) {
+      statusText.textContent =
+        "Status: Einsatz kann nicht höher als dein Guthaben sein.";
+      return;
+    }
+
+    betInput.value = String(next);
+  });
+});
+
+cashoutBtn.addEventListener("click", () => {
+  if (roundActive) {
+    statusText.textContent =
+      "Status: Du kannst nur zwischen den Runden speichern.";
+    return;
+  }
+
+  endGame();
+});
+
+// Help modal
 openHelpBtn.addEventListener("click", () => openModal(helpModal));
 closeHelpBtn.addEventListener("click", () => closeModal(helpModal));
 helpModal.addEventListener("click", (e) => {
   if (e.target === helpModal) closeModal(helpModal);
 });
 
+// Leaderboard modal
 openLeaderboardBtn.addEventListener("click", async () => {
   openModal(leaderboardModal);
   await loadLeaderboard();
@@ -461,6 +572,12 @@ openLeaderboardBtn.addEventListener("click", async () => {
 closeLeaderboardBtn.addEventListener("click", () => closeModal(leaderboardModal));
 leaderboardModal.addEventListener("click", (e) => {
   if (e.target === leaderboardModal) closeModal(leaderboardModal);
+});
+
+// Save modal
+skipSaveBtn.addEventListener("click", () => closeModal(saveScoreModal));
+saveScoreModal.addEventListener("click", (e) => {
+  if (e.target === saveScoreModal) closeModal(saveScoreModal);
 });
 
 saveScoreBtn.addEventListener("click", async () => {
@@ -479,9 +596,4 @@ saveScoreBtn.addEventListener("click", async () => {
     closeModal(saveScoreModal);
     await loadLeaderboard();
   }
-});
-
-skipSaveBtn.addEventListener("click", () => closeModal(saveScoreModal));
-saveScoreModal.addEventListener("click", (e) => {
-  if (e.target === saveScoreModal) closeModal(saveScoreModal);
 });
